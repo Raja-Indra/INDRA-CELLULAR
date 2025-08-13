@@ -138,6 +138,10 @@
                                                     <input type="number" class="form-control" id="harga_jual" name="harga_jual" required>
                                                 </div>
                                                 <div class="form-group">
+                                                    <label>Perkiraan Keuntungan</label>
+                                                    <input type="text" class="form-control" id="create_keuntungan" disabled style="font-weight: bold; color: green;" placeholder="Rp 0">
+                                                </div>
+                                                <div class="form-group">
                                                     <label for="stok">Stok</label>
                                                     <input type="number" class="form-control" id="stok" name="stok" required>
                                                 </div>
@@ -196,6 +200,10 @@
                                                 <input type="text" class="form-control" id="view_harga_jual" disabled>
                                             </div>
                                             <div class="form-group">
+                                                <label for="view_keuntungan">Keuntungan</label>
+                                                <input type="text" class="form-control" id="view_keuntungan" disabled style="font-weight: bold; color: green;">
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="view_stok">Stok</label>
                                                 <input type="text" class="form-control" id="view_stok" disabled>
                                             </div>
@@ -251,6 +259,10 @@
                                                 <div class="mb-3">
                                                     <label for="hargaJualProduk" class="form-label">Harga Jual</label>
                                                     <input type="number" class="form-control" id="hargaJualProduk" name="harga_jual" value="{{ $produk->harga_jual }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label>Perkiraan Keuntungan</label>
+                                                    <input type="text" class="form-control" id="edit_keuntungan" disabled style="font-weight: bold; color: green;" placeholder="Rp 0">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="stokProduk" class="form-label">Stok</label>

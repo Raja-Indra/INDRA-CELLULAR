@@ -4,13 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Contracts\Auth\CanResetPassword; // <-- Pastikan ini ada
+use Illuminate\Notifications\Notifiable; // <-- Pastikan ini ada
 use Illuminate\Support\Str;
 
-class User extends Authenticatable
+class User extends Authenticatable implements CanResetPassword // <-- Pastikan ini ada
 {
     use HasFactory;
-
-    protected $fillable = ['id', 'name', 'email', 'password', 'role'];
+    use Notifiable; // <-- Pastikan ini ada
+ 
+    protected $fillable = ['id', 'name', 'email', 'phone', 'password', 'role', 'profile_photo_path'];
     public $incrementing = false; // Matikan auto-increment untuk ID
     protected $keyType = 'string'; // Pastikan ID adalah string
 

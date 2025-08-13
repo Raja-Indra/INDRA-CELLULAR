@@ -167,8 +167,8 @@
                                             <input type="text" class="form-control" id="provider_id_display" disabled>
                                         </div>
                                         <div class="form-group">
-                                          <label for="providerName">Nama Provider</label>
-                                          <input type="text" class="form-control" id="nama_provider" name="nama_provider" required>
+                                          <label for="edit_nama_provider">Nama Provider</label>
+                                          <input type="text" class="form-control" id="edit_nama_provider" name="nama_provider" required>
                                         </div>
 
                                         <button type="submit" class="btn btn-primary">Simpan Perubahan</button>

@@ -4,28 +4,60 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 
-Route::get('/', function () {
-    return view('layouts.app');
+// --- Rute Publik (Bisa diakses tanpa login) ---
+Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('login', [AuthController::class, 'login'])->name('login.process');
+
+// RUTE BARU UNTUK LUPA PASSWORD
+Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+
+// --- Rute Terproteksi (Hanya bisa diakses setelah login) ---
+Route::middleware(['auth'])->group(function () {
+
+    // Rute utama setelah login
+    Route::get('/', function () {
+        return view('layouts.app');
+    });
+    Route::get('/layouts/app', function () {
+        return view('layouts.app');
+    })->name('layouts.app');
+
+    // RUTE BARU YANG DITAMBAHKAN UNTUK MENGATASI 404
+    Route::get('/dashboard', function () {
+        return view('layouts.app');
+    })->name('dashboard');
+
+    Route::get('/admin/dashboard', function () {
+        // Anda bisa mengarahkan ini ke view khusus admin jika ada
+        return view('layouts.app');
+    })->name('admin.dashboard');
+
+    // Profil
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Transaksi
+    Route::resource('transaksis', TransaksiController::class);
+
+    // Provider
+    Route::resource('providers', ProviderController::class);
+
+    // Produk
+    Route::resource('produks', ProdukController::class);
+
+    // Users
+    Route::resource('users', UserController::class);
+
+    // Rute untuk logout (harus di dalam grup auth)
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 });
-Route::get('/layouts/app', function () {
-    return view('layouts.app'); // Pastikan ada file resources/views/layouts/app.blade.php
-})->name('layouts.app');
 
-// Transaksi
-Route::resource('transaksis', TransaksiController::class);
-// Route::get('/transaksis', [TransaksiController::class, 'index'])->name('transaksis.index');
-// Route::get('/transaksis/create', [TransaksiController::class, 'create'])->name('transaksis.create');
-// Route::post('/transaksis', [TransaksiController::class, 'store'])->name('transaksis.store');
-// Route::get('/transaksis/{t}', [TransaksiController::class, 'show'])->name('transaksis.show');
-// Route::get('/transaksis/{t}/edit', [TransaksiController::class, 'edit'])->name('transaksis.edit');
-// Route::put('/transaksis/{t}', [TransaksiController::class, 'update'])->name('transaksis.update');
-// Route::delete('/transaksis/{t}', [TransaksiController::class, 'destroy'])->name('transaksis.destroy');
-
-// Provider
-Route::resource('providers', ProviderController::class);
-// Route::delete('/providers/{pr}', [ProviderController::class, 'destroy'])->name('providers.destroy');
-// Route::put('providers/{pr}', [ProviderController::class, 'update'])->name('pr.update');
-
-// Produk
-Route::resource('produks', ProdukController::class);
