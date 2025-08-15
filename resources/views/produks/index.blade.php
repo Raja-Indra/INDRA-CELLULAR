@@ -7,11 +7,7 @@
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
 
-  <!-- Preloader -->
-  <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
-  </div>
-
+    @include('layouts.preloader')
     @include('layouts.navigation')
     @include('layouts.sidebar')
 
@@ -117,6 +113,17 @@
                                             @csrf
                                             <div class="modal-body">
                                                 <div class="form-group">
+                                                    <label for="jenis">Jenis Produk</label>
+                                                    <select class="form-control" id="jenis" name="jenis" required>
+                                                        <option value="" disabled selected>Pilih Jenis</option>
+                                                        <option value="Pulsa">Pulsa</option>
+                                                        <option value="Paket Data">Paket Data</option>
+                                                        <option value="Voucher">Voucher</option>
+                                                        <option value="Voucher">Saldo</option>
+
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
                                                     <label for="provider_id">Provider</label>
                                                     <select class="form-control" id="provider_id" name="provider_id" required>
                                                         <option value="" disabled selected>Pilih Provider</option>
@@ -145,15 +152,7 @@
                                                     <label for="stok">Stok</label>
                                                     <input type="number" class="form-control" id="stok" name="stok" required>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label for="jenis">Jenis Produk</label>
-                                                    <select class="form-control" id="jenis" name="jenis" required>
-                                                        <option value="" disabled selected>Pilih Jenis</option>
-                                                        <option value="Pulsa">Pulsa</option>
-                                                        <option value="Paket Data">Paket Data</option>
-                                                        <option value="Voucher">Voucher</option>
-                                                    </select>
-                                                </div>
+
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="submit" class="btn btn-primary">

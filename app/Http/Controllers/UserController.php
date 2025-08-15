@@ -27,6 +27,7 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'phone' => 'nullable|digits_between:10,15',
             'password' => 'required|string|min:8',
             'role' => 'required|string|in:admin,karyawan', // Disesuaikan
         ]);
@@ -49,6 +50,7 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'phone' => 'nullable|digits_between:10,15',
             'role' => 'required|string|in:admin,karyawan', // Disesuaikan
             'password' => 'nullable|string|min:8',
         ]);
@@ -56,6 +58,7 @@ class UserController extends Controller
         // Update data user
         $user->name = $validatedData['name'];
         $user->email = $validatedData['email'];
+        $user->phone = $validatedData['phone'];
         $user->role = $validatedData['role'];
 
         // Jika ada password baru yang diinput, enkripsi dan perbarui

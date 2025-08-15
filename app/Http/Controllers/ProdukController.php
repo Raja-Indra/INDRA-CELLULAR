@@ -20,19 +20,7 @@ class ProdukController extends Controller
         return view('produks.index', compact('pk', 'pr'));
     }
 
-    /**
-     * Menampilkan form untuk membuat produk baru.
-     */
-    // public function create()
-    // {
-    //     // Ambil data provider untuk dropdown
-    //     $pr = Provider::all();
-    //     return view('produks.create', compact('pk'));
-    // }
 
-    /**
-     * Menyimpan produk baru ke database.
-     */
     public function store(Request $request)
     {
         // dd($request->all());

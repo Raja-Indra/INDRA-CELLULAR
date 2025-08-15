@@ -15,7 +15,6 @@
 <script src="{{ asset('plugins/summernote/summernote-bs4.min.js') }}"></script>
 <script src="{{ asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 <script src="{{ asset('dist/js/adminlte.js') }}"></script>
-
 <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
@@ -32,6 +31,14 @@ $(function () {
 });
 </script>
 
+<script>
+    // Kode BARU yang lebih bersih dan efektif
+    $(window).on('load', function() {
+    // Cukup tambahkan kelas untuk menyembunyikan preloader
+    // CSS akan menangani semua animasi dan persembunyiannya
+    $('.preloader').addClass('preloader-hidden');
+});
+</script>
 {{-- Tambah Data --}}
 <script>
     // MENANGANI KONFIRMASI SUBMIT
@@ -46,13 +53,59 @@ $(function () {
 @push('scripts')
 <script>
 $(function() {
-    // MENANGANI TOMBOL EDIT
-    $('.btn-edit').on('click', function(e) {
+
+     // LOGIKA BARU UNTUK TOMBOL LIHAT DETAIL
+    // -----------------------------------------------------------------
+    $('.btn-view').on('click', function(e) {
         e.preventDefault();
 
+        // 1. Ambil data dari tombol
         let id = $(this).data('id');
         let name = $(this).data('name');
         let email = $(this).data('email');
+        let phone = $(this).data('phone');
+        let role = $(this).data('role');
+
+        // 2. Isi field di dalam modal lihat data
+        $('#view_id').val(id);
+        $('#view_name').val(name);
+        $('#view_email').val(email);
+        $('#view_phone').val(phone);
+        // Mengubah teks role agar lebih mudah dibaca (Admin, Karyawan)
+        $('#view_role').val(role.charAt(0).toUpperCase() + role.slice(1));
+
+        // 3. Tampilkan modal
+        $('#viewUserModal').modal('show');
+    });
+    
+    // -----------------------------------------------------------------
+    // LOGIKA UNTUK TOMBOL TAMBAH USER (BARU)
+    // -----------------------------------------------------------------
+    $('.btn-create').on('click', function() {
+        // 1. Bersihkan form tambah user dari error lama
+        $('#createForm .form-control').removeClass('is-invalid');
+        $('#createForm .invalid-feedback').text('');
+
+        // 2. Reset semua isi field di form tambah user
+        $('#createForm')[0].reset();
+    });
+
+
+    // -----------------------------------------------------------------
+    // LOGIKA UNTUK TOMBOL EDIT USER (DIPERBAIKI)
+    // -----------------------------------------------------------------
+    $('.btn-edit').on('click', function(e) {
+        e.preventDefault();
+
+        // 1. Bersihkan form edit dari error lama (HANYA form edit)
+        $('#editForm .form-control').removeClass('is-invalid');
+        $('#editForm .invalid-feedback').text('');
+
+        // 2. Ambil data dari tombol dan isi form edit
+        let id = $(this).data('id');
+        let name = $(this).data('name');
+        let email = $(this).data('email');
+        let phone = $(this).data('phone');
         let role = $(this).data('role');
 
         let url = `/users/${id}`;
@@ -60,8 +113,13 @@ $(function() {
         $('#edit_user_id_display').val(id);
         $('#edit_name').val(name);
         $('#edit_email').val(email);
+        $('#edit_phone').val(phone);
         $('#edit_role').val(role);
 
+        // Kosongkan field password HANYA di form edit
+        $('#editForm [name="password"]').val('');
+
+        // 3. Tampilkan modal edit
         $('#editUserModal').modal('show');
     });
 

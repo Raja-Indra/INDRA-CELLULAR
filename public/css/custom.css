@@ -1,1 +1,66 @@
+/* Styling utama untuk Preloader */
+.preloader {
+  position: fixed; /* Memastikan posisinya menutupi seluruh layar */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999; /* Memastikan selalu di lapisan paling atas */
+  background-color: #f4f6f9; /* Sesuaikan dengan warna background body Anda */
+
+  /* Menggunakan flex untuk memposisikan spinner di tengah */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Transisi untuk fade-out yang mulus */
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+/* Kelas ini akan ditambahkan oleh JavaScript untuk menyembunyikan preloader */
+.preloader-hidden {
+  opacity: 0;
+  visibility: hidden;
+  z-index: -1; /* Pindahkan ke lapisan paling bawah untuk mencegah interaksi */
+}
+
+/* CSS untuk Loading Spinner Bundar */
+.loader {
+  border: 8px solid #f3f3f3; /* Warna dasar cincin */
+  border-top: 8px solid #3498db; /* Warna bagian yang berputar (biru) */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+/* Animasi untuk berputar */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Memberi warna background pada sub-menu yang aktif di sidebar */
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-treeview > .nav-item > .nav-link.active {
+  background-color: #0056b3 !important; /* Warna biru yang sedikit lebih gelap */
+  color: #ffffff !important;
+}
+
+/* Styling tambahan untuk menyempurnakan logo teks */
+.brand-link .brand-text {
+  letter-spacing: 0.5px; /* Memberi sedikit jarak antar huruf */
+}
+
+/* Sedikit merapatkan jarak antara INDRA dan CELL agar terlihat menyatu */
+.brand-link .brand-text .font-weight-light {
+  margin-left: -1px;
+}
+
+/* Mengubah warna icon agar lebih cocok dengan teks */
+.brand-link .brand-image {
+    color: #007bff; /* Warna biru primer AdminLTE */
+}
+
 
