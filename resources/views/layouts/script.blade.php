@@ -77,7 +77,7 @@ $(function() {
         // 3. Tampilkan modal
         $('#viewUserModal').modal('show');
     });
-    
+
     // -----------------------------------------------------------------
     // LOGIKA UNTUK TOMBOL TAMBAH USER (BARU)
     // -----------------------------------------------------------------
@@ -168,17 +168,56 @@ function hitungKeuntungan(modalSelector, jualSelector, displaySelector) {
     $(displaySelector).val(formatRupiah(keuntungan));
 }
 
+// Lihat produk
 function tampilkanDetailProduk(id, provider_id, nama, harga_modal, harga_jual, stok, jenis) {
-    const providerNama = $(`a[onclick*="${id}"]`).closest('tr').find('td:nth-child(3)').text();
-    const keuntungan = parseFloat(harga_jual) - parseFloat(harga_modal);
+    const providerNama = $(`a[data-id="${id}"].btn-edit`).closest('tr').find('td:nth-child(4)').text();
+
+    // --- Referensi ke elemen div pembungkus (.form-group) ---
+    const namaProdukGroup = $('#view_nama_produk').closest('.form-group');
+    const hargaModalGroup = $('#view_harga_modal').closest('.form-group');
+    const hargaJualGroup = $('#view_harga_jual').closest('.form-group');
+    const keuntunganGroup = $('#view_keuntungan').closest('.form-group');
+    const stokGroup = $('#view_stok').closest('.form-group');
+
+    // --- Isi data yang selalu tampil ---
     $('#view_produk_id').val(id);
-    $('#view_provider').val(providerNama);
-    $('#view_nama_produk').val(nama);
-    $('#view_harga_modal').val(formatRupiah(harga_modal));
-    $('#view_harga_jual').val(formatRupiah(harga_jual));
-    $('#view_keuntungan').val(formatRupiah(keuntungan));
-    $('#view_stok').val(stok);
     $('#view_jenis').val(jenis);
+    $('#view_provider').val(providerNama);
+
+    // --- Logika dinamis untuk menampilkan/menyembunyikan field ---
+    if (jenis === 'Saldo') {
+        // Jika jenisnya Saldo, sembunyikan field yang tidak perlu
+        namaProdukGroup.hide();
+        hargaModalGroup.hide();
+        hargaJualGroup.hide();
+        keuntunganGroup.hide();
+
+        // Tampilkan field stok dan ubah label serta formatnya
+        stokGroup.show();
+        stokGroup.find('label').text('Nominal Saldo');
+        $('#view_stok').val(formatRupiah(stok));
+
+    } else { // Untuk jenis lain (Pulsa, Paket Data, dll)
+        // Tampilkan semua field
+        namaProdukGroup.show();
+        hargaModalGroup.show();
+        hargaJualGroup.show();
+        keuntunganGroup.show();
+        stokGroup.show();
+
+        // Isi data untuk field yang ditampilkan
+        $('#view_nama_produk').val(nama || '-'); // Tampilkan '-' jika null
+        $('#view_harga_modal').val(formatRupiah(harga_modal));
+        $('#view_harga_jual').val(formatRupiah(harga_jual));
+        const keuntungan = parseFloat(harga_jual) - parseFloat(harga_modal);
+        $('#view_keuntungan').val(formatRupiah(keuntungan));
+
+        // Atur label dan nilai stok seperti biasa
+        stokGroup.find('label').text('Stok');
+        $('#view_stok').val(stok);
+    }
+
+    // Tampilkan modal
     $('#viewProdukModal').modal('show');
 }
 
@@ -189,7 +228,70 @@ $(function() {
         hitungKeuntungan('#createModal #harga_modal', '#createModal #harga_jual', '#create_keuntungan');
     });
     $('#editProdukModal #hargaModalProduk, #editProdukModal #hargaJualProduk').on('keyup change', function() {
-        hitungKeuntungan('#hargaModalProduk', '#hargaJualProduk', '#edit_keuntungan');
+        hitungKeuntungan('#editProdukModal #hargaModalProduk', '#editProdukModal #hargaJualProduk', '#edit_keuntungan');
+    });
+
+    // LOGIKA DINAMIS UNTUK FORM TAMBAH PRODUK
+    $('#createModal #jenis').on('change', function() {
+        let jenisTerpilih = $(this).val();
+        const fieldsWrapper = $('#detail-produk-fields');
+        const requiredInputs = fieldsWrapper.find('input[name="nama_produk"], input[name="harga_modal"], input[name="harga_jual"]');
+
+        // --- LOGIKA BARU UNTUK SHOW/HIDE ---
+        if (jenisTerpilih === 'Saldo') {
+            fieldsWrapper.hide();
+            requiredInputs.prop('required', false);
+        } else {
+            fieldsWrapper.show();
+            requiredInputs.prop('required', true);
+        }
+        // --- AKHIR LOGIKA BARU ---
+
+        let providerDropdown = $('#createModal #provider_id');
+        let labelStok = $('#createModal #label_stok_saldo');
+        labelStok.text(jenisTerpilih === 'Saldo' ? 'Nominal Saldo' : 'Stok');
+        let kategoriFilter = jenisTerpilih.toLowerCase().replace(' ', '');
+        providerDropdown.val('');
+        providerDropdown.find('option').each(function() {
+            let option = $(this);
+            let kategoriProvider = option.data('kategori');
+            if (option.val() === "" || kategoriProvider === kategoriFilter) {
+                option.show();
+            } else {
+                option.hide();
+            }
+        });
+    });
+
+    // LOGIKA DINAMIS UNTUK FORM EDIT PRODUK
+    $('#editProdukModal #jenisProduk').on('change', function() {
+        let jenisTerpilih = $(this).val();
+        const fieldsWrapper = $('#edit-detail-produk-fields'); // Pastikan ID ini ada di modal edit Anda
+        const requiredInputs = fieldsWrapper.find('input[name="nama_produk"], input[name="harga_modal"], input[name="harga_jual"]');
+
+        // --- LOGIKA BARU UNTUK SHOW/HIDE ---
+        if (jenisTerpilih === 'Saldo') {
+            fieldsWrapper.hide();
+            requiredInputs.prop('required', false);
+        } else {
+            fieldsWrapper.show();
+            requiredInputs.prop('required', true);
+        }
+        // --- AKHIR LOGIKA BARU ---
+
+        let providerDropdown = $('#editProdukModal #providerId');
+        let labelStok = $('#editProdukModal #edit_label_stok_saldo');
+        labelStok.text(jenisTerpilih === 'Saldo' ? 'Nominal Saldo' : 'Stok');
+        let kategoriFilter = jenisTerpilih.toLowerCase().replace(' ', '');
+        providerDropdown.find('option').each(function() {
+            let option = $(this);
+            let kategoriProvider = option.data('kategori');
+            if (option.val() === "" || kategoriProvider === kategoriFilter) {
+                option.show();
+            } else {
+                option.hide();
+            }
+        });
     });
 
     // MENANGANI TOMBOL EDIT PRODUK
@@ -198,13 +300,16 @@ $(function() {
         const data = $(this).data();
         $("#editForm").attr("action", `/produks/${data.id}`);
         $("#produkId").val(data.id);
-        $("#providerId").val(data.provider_id);
         $("#namaProduk").val(data.nama_produk);
         $("#hargaModalProduk").val(data.harga_modal);
         $("#hargaJualProduk").val(data.harga_jual);
         $("#stokProduk").val(data.stok);
         $("#jenisProduk").val(data.jenis);
-        hitungKeuntungan('#hargaModalProduk', '#hargaJualProduk', '#edit_keuntungan');
+        $("#providerId").val(data.provider_id);
+
+        $("#jenisProduk").trigger('change'); // Trigger ini akan menjalankan semua logika dinamis
+
+        hitungKeuntungan('#editProdukModal #hargaModalProduk', '#editProdukModal #hargaJualProduk', '#edit_keuntungan');
         $('#editProdukModal').modal('show');
     });
 });

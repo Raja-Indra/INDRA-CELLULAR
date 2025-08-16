@@ -52,12 +52,12 @@
                                 <thead>
                                     <tr class="text-center">
                                         <th>ID</th>
+                                        <th>Jenis</th>
                                         <th>Nama Produk</th>
                                         <th>Provider</th>
                                         <th>Harga Modal</th>
                                         <th>Harga Jual</th>
-                                        <th>Stok</th>
-                                        <th>Jenis</th>
+                                        <th>Stok / Nominal</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -65,17 +65,38 @@
                                     @foreach($pk as $produk)
                                     <tr>
                                         <td class="text-center">{{ $produk->id }}</td>
-                                        <td class="text-center">{{ $produk->nama_produk }}</td>
-                                        <td class="text-center">{{ $produk->provider->nama_provider }}</td>
-                                        <td class="text-center">{{ number_format($produk->harga_modal, 2) }}</td>
-                                        <td class="text-center">{{ number_format($produk->harga_jual, 2) }}</td>
-                                        <td class="text-center">{{ $produk->stok }}</td>
                                         <td class="text-center">{{ ucfirst($produk->jenis) }}</td>
+
+                                        {{-- Jika nama_produk null, tampilkan '-' --}}
+                                        <td class="text-center">{{ $produk->nama_produk ?? '-' }}</td>
+
+                                        <td class="text-center">{{ $produk->provider->nama_provider }}</td>
+
+                                        {{-- Jika harga_modal ada (bukan 0 atau null), format, jika tidak tampilkan '-' --}}
                                         <td class="text-center">
+                                            {{ $produk->harga_modal ? 'Rp ' . number_format($produk->harga_modal, 0, ',', '.') : '-' }}
+                                        </td>
+
+                                        {{-- Jika harga_jual ada, format, jika tidak tampilkan '-' --}}
+                                        <td class="text-center">
+                                            {{ $produk->harga_jual ? 'Rp ' . number_format($produk->harga_jual, 0, ',', '.') : '-' }}
+                                        </td>
+
+                                        {{-- Jika jenisnya Saldo, format stok sebagai Rupiah, jika tidak, tampilkan biasa --}}
+                                        <td class="text-center">
+                                            @if($produk->jenis == 'Saldo')
+                                                {{ 'Rp ' . number_format($produk->stok, 0, ',', '.') }}
+                                            @else
+                                                {{ $produk->stok }}
+                                            @endif
+                                        </td>
+
+                                        <td class="text-center">
+                                            {{-- Tombol Aksi Anda (tidak perlu diubah) --}}
                                             <a href="#" class="btn btn-info btn-sm"
                                                 onclick="tampilkanDetailProduk('{{ $produk->id }}', '{{ $produk->provider_id }}', '{{ $produk->nama_produk }}', '{{ $produk->harga_modal }}', '{{ $produk->harga_jual }}', '{{ $produk->stok }}', '{{ $produk->jenis }}')">
-                                                    <i class="fas fa-eye"></i> Lihat
-                                                </a>
+                                                <i class="fas fa-eye"></i> Lihat
+                                            </a>
 
                                             <a href="#" class="btn btn-warning btn-sm btn-edit"
                                                 data-id="{{ $produk->id }}"
@@ -85,8 +106,9 @@
                                                 data-harga_jual="{{ $produk->harga_jual }}"
                                                 data-stok="{{ $produk->stok }}"
                                                 data-jenis="{{ $produk->jenis }}">
-                                                    <i class="fas fa-edit"></i> Edit
+                                                <i class="fas fa-edit"></i> Edit
                                             </a>
+
                                             <form action="{{ route('produks.destroy', $produk->id) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
@@ -119,7 +141,7 @@
                                                         <option value="Pulsa">Pulsa</option>
                                                         <option value="Paket Data">Paket Data</option>
                                                         <option value="Voucher">Voucher</option>
-                                                        <option value="Voucher">Saldo</option>
+                                                        <option value="Saldo">Saldo</option>
 
                                                     </select>
                                                 </div>
@@ -128,28 +150,32 @@
                                                     <select class="form-control" id="provider_id" name="provider_id" required>
                                                         <option value="" disabled selected>Pilih Provider</option>
                                                         @foreach($pr as $provider)
-                                                            <option value="{{ $provider->id }}">{{ $provider->nama_provider }}</option>
+                                                             <option value="{{ $provider->id }}" data-kategori="{{ $provider->kategori }}">
+                                                                {{ $provider->nama_provider }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label for="nama_produk">Nama Produk</label>
-                                                    <input type="text" class="form-control" id="nama_produk" name="nama_produk" required>
+                                                <div id="detail-produk-fields">
+                                                    <div class="form-group">
+                                                        <label for="nama_produk">Nama Produk</label>
+                                                        <input type="text" class="form-control" id="nama_produk" name="nama_produk" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="harga_modal">Harga Modal</label>
+                                                        <input type="number" class="form-control" id="harga_modal" name="harga_modal" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="harga_jual">Harga Jual</label>
+                                                        <input type="number" class="form-control" id="harga_jual" name="harga_jual" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Perkiraan Keuntungan</label>
+                                                        <input type="text" class="form-control" id="create_keuntungan" disabled ...>
+                                                    </div>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label for="harga">Harga Modal</label>
-                                                    <input type="number" class="form-control" id="harga_modal" name="harga_modal" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="harga">Harga Jual</label>
-                                                    <input type="number" class="form-control" id="harga_jual" name="harga_jual" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Perkiraan Keuntungan</label>
-                                                    <input type="text" class="form-control" id="create_keuntungan" disabled style="font-weight: bold; color: green;" placeholder="Rp 0">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="stok">Stok</label>
+                                               <div class="form-group">
+                                                    <label for="stok" id="label_stok_saldo">Stok</label>
                                                     <input type="number" class="form-control" id="stok" name="stok" required>
                                                 </div>
 
@@ -183,6 +209,10 @@
                                                 <input type="text" class="form-control" id="view_produk_id" disabled>
                                             </div>
                                             <div class="form-group">
+                                                <label for="view_jenis">Jenis</label>
+                                                <input type="text" class="form-control" id="view_jenis" disabled>
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="view_provider">Provider</label>
                                                 <input type="text" class="form-control" id="view_provider" disabled>
                                             </div>
@@ -206,10 +236,7 @@
                                                 <label for="view_stok">Stok</label>
                                                 <input type="text" class="form-control" id="view_stok" disabled>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="view_jenis">Jenis</label>
-                                                <input type="text" class="form-control" id="view_jenis" disabled>
-                                            </div>
+
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">
@@ -231,50 +258,57 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <form id="editForm" action="{{ route('produks.update', $produk->id) }}" method="POST">
+                                            {{-- Form action diatur oleh JavaScript --}}
+                                            <form id="editForm" method="POST">
                                                 @csrf
                                                 @method('PUT')
                                                 <div class="mb-3">
                                                     <label for="produkId">ID Produk</label>
                                                     <input type="text" class="form-control" id="produkId" disabled>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label for="jenisProduk">Jenis Produk</label>
+                                                    <select class="form-control" id="jenisProduk" name="jenis" required>
+                                                        <option value="" disabled>Pilih Jenis</option>
+                                                        <option value="Pulsa">Pulsa</option>
+                                                        <option value="Paket Data">Paket Data</option>
+                                                        <option value="Voucher">Voucher</option>
+                                                        <option value="Saldo">Saldo</option>
+                                                    </select>
+                                                </div>
                                                 <div class="mb-3">
                                                     <label for="providerId" class="form-label">Provider</label>
                                                     <select class="form-control" id="providerId" name="provider_id" required>
                                                         <option value="" disabled>Pilih Provider</option>
                                                         @foreach($pr as $provider)
-                                                            <option value="{{ $provider->id }}">{{ $provider->nama_provider }}</option>
+                                                            {{-- TAMBAHKAN data-kategori DI SINI --}}
+                                                            <option value="{{ $provider->id }}" data-kategori="{{ $provider->kategori }}">
+                                                                {{ $provider->nama_provider }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <div class="mb-3">
-                                                    <label for="namaProduk" class="form-label">Nama Produk</label>
-                                                    <input type="text" class="form-control" id="namaProduk" name="nama_produk" value="{{ $produk->nama_produk }}" required>
+                                                <div id="edit-detail-produk-fields">
+                                                    <div class="mb-3">
+                                                        <label for="namaProduk" class="form-label">Nama Produk</label>
+                                                        <input type="text" class="form-control" id="namaProduk" name="nama_produk" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="hargaModalProduk" class="form-label">Harga Modal</label>
+                                                        <input type="number" class="form-control" id="hargaModalProduk" name="harga_modal" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="hargaJualProduk" class="form-label">Harga Jual</label>
+                                                        <input type="number" class="form-control" id="hargaJualProduk" name="harga_jual" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Perkiraan Keuntungan</label>
+                                                        <input type="text" class="form-control" id="edit_keuntungan" disabled style="font-weight: bold; color: green;" placeholder="Rp 0">
+                                                    </div>
                                                 </div>
-                                                <div class="mb-3">
-                                                    <label for="hargaModalProduk" class="form-label">Harga Modal</label>
-                                                    <input type="number" class="form-control" id="hargaModalProduk" name="harga_modal" value="{{ $produk->harga_modal }}" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="hargaJualProduk" class="form-label">Harga Jual</label>
-                                                    <input type="number" class="form-control" id="hargaJualProduk" name="harga_jual" value="{{ $produk->harga_jual }}" required>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label>Perkiraan Keuntungan</label>
-                                                    <input type="text" class="form-control" id="edit_keuntungan" disabled style="font-weight: bold; color: green;" placeholder="Rp 0">
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label for="stokProduk" class="form-label">Stok</label>
-                                                    <input type="number" class="form-control" id="stokProduk" name="stok" value="{{ $produk->stok }}" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="jenisProduk">Jenis Produk</label>
-                                                    <select class="form-control" id="jenisProduk" name="jenis" value="{{ $produk->jenis }}" required>
-                                                        <option value="" disabled selected>Pilih Jenis</option>
-                                                        <option value="Pulsa">Pulsa</option>
-                                                        <option value="Paket Data">Paket Data</option>
-                                                        <option value="Voucher">Voucher</option>
-                                                    </select>
+                                                <div class="mb-3"> {{-- Struktur diperbaiki --}}
+                                                    <label for="stokProduk" id="edit_label_stok_saldo">Stok</label>
+                                                    <input type="number" class="form-control" id="stokProduk" name="stok" required>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="submit" class="btn btn-primary">

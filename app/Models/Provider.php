@@ -10,7 +10,7 @@ class Provider extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id', 'nama_provider'];
+    protected $fillable = ['id', 'nama_provider', 'kategori'];
     public $incrementing = false; // Matikan auto-increment untuk ID
     protected $keyType = 'string'; // Pastikan ID adalah string
 

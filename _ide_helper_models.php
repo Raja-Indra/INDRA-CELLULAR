@@ -1,0 +1,127 @@
+<?php
+
+// @formatter:off
+// phpcs:ignoreFile
+/**
+ * A helper file for your Eloquent Models
+ * Copy the phpDocs from this file to the correct Model,
+ * And remove them from this file, to prevent double declarations.
+ *
+ * @author Barry vd. Heuvel <barryvdh@gmail.com>
+ */
+
+
+namespace App\Models{
+/**
+ * @property string $id
+ * @property string $provider_id
+ * @property string $nama_produk
+ * @property string $harga_modal
+ * @property string $harga_jual
+ * @property int $stok
+ * @property string $jenis
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Provider $provider
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaksi> $transaksis
+ * @property-read int|null $transaksis_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Produk newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Produk newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Produk query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Produk whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Produk whereHargaJual($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Produk whereHargaModal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Produk whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Produk whereJenis($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Produk whereNamaProduk($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Produk whereProviderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Produk whereStok($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Produk whereUpdatedAt($value)
+ */
+	class Produk extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property string $id
+ * @property string $nama_provider
+ * @property string|null $kategori
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Produk> $produks
+ * @property-read int|null $produks_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Provider newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Provider newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Provider query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Provider whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Provider whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Provider whereKategori($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Provider whereNamaProvider($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Provider whereUpdatedAt($value)
+ */
+	class Provider extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property string $id
+ * @property string $user_id
+ * @property string $produk_id
+ * @property string $nomor_pelanggan
+ * @property string $total_harga
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Produk $produk
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereNomorPelanggan($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereProdukId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereTotalHarga($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereUserId($value)
+ */
+	class Transaksi extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property string $id
+ * @property string $name
+ * @property string $email
+ * @property string|null $email_verified_at
+ * @property string|null $phone
+ * @property string $password
+ * @property string $role
+ * @property string|null $profile_photo_path
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaksi> $transaksis
+ * @property-read int|null $transaksis_count
+ * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereProfilePhotoPath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRole($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
+ */
+	class User extends \Eloquent {}
+}
+

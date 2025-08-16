@@ -27,12 +27,14 @@ class ProdukController extends Controller
 
         // Validasi input
         $request->validate([
-            'provider_id' => 'required|string|exists:providers,id',
-            'nama_produk' => 'required|string|max:255',
-            'harga_modal' => 'required|numeric|min:1',
-            'harga_jual' => 'required|numeric|min:1',
+            'provider_id' => 'required|exists:providers,id',
             'stok' => 'required|integer|min:0',
-            'jenis' => 'required|string|in:Pulsa,Paket Data,Voucher',
+            'jenis' => 'required|string|in:Pulsa,Paket Data,Voucher,Saldo',
+
+            // Aturan ini hanya berlaku JIKA 'jenis' BUKAN 'Saldo'
+            'nama_produk' => 'required_unless:jenis,Saldo|nullable|string|max:255',
+            'harga_modal' => 'required_unless:jenis,Saldo|nullable|numeric|min:1',
+            'harga_jual' => 'required_unless:jenis,Saldo|nullable|numeric|min:1',
         ]);
 
         // Simpan produk baru
@@ -71,12 +73,14 @@ class ProdukController extends Controller
 
         // Validasi input
         $request->validate([
-            'provider_id' => 'required|string|exists:providers,id',
-            'nama_produk' => 'required|string|max:255',
-            'harga_modal' => 'required|numeric|min:1',
-            'harga_jual' => 'required|numeric|min:1',
+            'provider_id' => 'required|exists:providers,id',
             'stok' => 'required|integer|min:0',
-            'jenis' => 'required|string|in:Pulsa,Paket Data,Voucher',
+            'jenis' => 'required|string|in:Pulsa,Paket Data,Voucher,Saldo',
+
+            // Aturan ini hanya berlaku JIKA 'jenis' BUKAN 'Saldo'
+            'nama_produk' => 'required_unless:jenis,Saldo|nullable|string|max:255',
+            'harga_modal' => 'required_unless:jenis,Saldo|nullable|numeric|min:1',
+            'harga_jual' => 'required_unless:jenis,Saldo|nullable|numeric|min:1',
         ]);
 
         // Perbarui data produk
