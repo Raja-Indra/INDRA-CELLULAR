@@ -12,21 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('transaksis', function (Blueprint $table) {
-            $table->string('id')->primary(); // ID sebagai string dan primary key
-            $table->string('user_id'); // Kolom user_id, tipe data string
-            $table->foreign('user_id')  // Mendefinisikan relasi ke kolom id di tabel users
-                  ->references('id')         // Kolom yang menjadi referensi (id) di tabel users
-                  ->on('users')          // Nama tabel yang menjadi referensi
-                  ->onDelete('cascade');     // Aksi ketika data di tabel users dihapus
-            $table->string('produk_id'); // Kolom produk_id, tipe data string
-            $table->foreign('produk_id')  // Mendefinisikan relasi ke kolom id di tabel produks
-                  ->references('id')         // Kolom yang menjadi referensi (id) di tabel produks
-                  ->on('produks')          // Nama tabel yang menjadi referensi
-                  ->onDelete('cascade');     // Aksi ketika data di tabel produks dihapus
-            $table->string('nomor_pelanggan'); // Nomor handphone atau meteran listrik
-            $table->decimal('total_harga', 10, 2); // Total harga transaksi
-            $table->enum('status', ['sukses', 'pending', 'gagal'])->default('pending'); // Status transaksi
-            $table->timestamps(); // created_at dan updated_at
+            $table->string('id')->primary();
+            $table->string('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+            // HAPUS KOLOM PRODUK_ID DARI SINI
+            // $table->unsignedBigInteger('produk_id');
+            // $table->foreign('produk_id')->references('id')->on('produks')->onDelete('cascade');
+
+            $table->string('nomor_pelanggan');
+            $table->integer('total_harga');
+            $table->enum('status', ['pending', 'success', 'failed'])->default('pending');
+            $table->timestamps();
         });
     }
 

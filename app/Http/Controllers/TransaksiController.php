@@ -2,115 +2,115 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaksi;
 use App\Models\Produk;
+use App\Models\Transaksi;
 use App\Models\User;
-use App\Models\Setting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; // Penting untuk database transaction
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class TransaksiController extends Controller
 {
+    /**
+     * Menampilkan halaman daftar transaksi.
+     */
     public function index()
     {
-        // Ambil semua data yang dibutuhkan oleh halaman index DAN modal
-        $t = Transaksi::with(['user', 'produk.provider'])->latest()->get();
+        // Mengambil data dengan relasi untuk menghindari N+1 query problem
+        $transaksis = Transaksi::with('user', 'produks.provider')->latest()->get();
         $users = User::all();
-        $produks = Produk::where('stok', '>', 0)->get();
+        $produks = Produk::with('provider')->where('stok', '>', 0)->get(); // Hanya tampilkan produk yang ada stok
 
-        return view('transaksis.index', compact('t', 'users', 'produks'));
-
+        return view('transaksis.index', compact('transaksis', 'users', 'produks'));
     }
 
-    public function create()
-    {
-        $users = User::all();
-        $produks = Produk::where('stok', '>', 0)->get(); // Hanya produk yang ada stok
-        return view('transaksis.create', compact('users', 'produks'));
-    }
-
+    /**
+     * Menyimpan transaksi baru ke dalam database.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'produk_id' => 'required|exists:produks,id',
-            'nomor_pelanggan' => 'required|string|min:5|max:20',
-        ]);
+        // 1. Aturan Validasi
+        $rules = [
+            'user_id'         => 'required|string|exists:users,id',
+            'nomor_pelanggan' => 'required|string|max:25',
+            'total_harga'     => 'required|numeric|min:1',
+            'produks'         => 'required|array|min:1',
+            // Perbaikan: Validasi sebagai string, bukan integer
+            'produks.*.id'    => 'required|string|exists:produks,id'
+        ];
 
-        // Gunakan Database Transaction untuk memastikan integritas data
-        DB::beginTransaction();
+        // 2. Pesan Kustom untuk Error
+        $messages = [
+            'produks.required' => 'Keranjang transaksi tidak boleh kosong.',
+            'produks.min'      => 'Anda harus menambahkan setidaknya satu produk ke transaksi.',
+            'produks.*.id.exists' => 'Salah satu produk yang dipilih tidak valid atau sudah tidak ada.'
+        ];
+
+        // 3. Menjalankan Validasi
+        $validatedData = $request->validate($rules, $messages);
+
+        // 4. Menggunakan Database Transaction
+        // Ini memastikan semua operasi (buat transaksi, kurangi stok, simpan relasi) berhasil.
+        // Jika ada satu yang gagal, semua akan dibatalkan (rollback).
         try {
-            $produk = Produk::findOrFail($request->produk_id);
-            $settingSaldo = Setting::where('key', 'saldo_utama')->first();
-            $saldoUtama = $settingSaldo ? (float)$settingSaldo->value : 0;
+            DB::beginTransaction();
 
-            // 1. Cek Saldo Utama
-            if ($saldoUtama < $produk->harga_modal) {
-                throw new \Exception('Transaksi gagal, saldo utama tidak mencukupi.');
-            }
-
-            // 2. Cek Stok Produk
-            if ($produk->stok <= 0) {
-                throw new \Exception('Transaksi gagal, stok produk habis.');
-            }
-
-            // 3. Buat Transaksi Baru
-            Transaksi::create([
-                'user_id' => $request->user_id,
-                'produk_id' => $request->produk_id,
-                'nomor_pelanggan' => $request->nomor_pelanggan,
-                'total_harga' => $produk->harga_jual, // Ambil harga jual dari produk
-                'status' => 'success', // Langsung set sukses
+            // Buat transaksi utama
+            $transaksi = Transaksi::create([
+                'id'              => 'TRN-' . now()->format('YmdHis') . '-' . Str::random(5),
+                'user_id'         => $validatedData['user_id'],
+                'nomor_pelanggan' => $validatedData['nomor_pelanggan'],
+                'total_harga'     => $validatedData['total_harga'],
+                'status'          => 'success', // Status default
             ]);
 
-            // 4. Kurangi Stok Produk
-            $produk->decrement('stok');
+            // Ambil semua ID produk dari request
+            $produkIds = collect($validatedData['produks'])->pluck('id');
 
-            // 5. Kurangi Saldo Utama
-            $saldoBaru = $saldoUtama - $produk->harga_modal;
-            $settingSaldo->update(['value' => $saldoBaru]);
+            // Lampirkan semua produk ke transaksi (mengisi tabel pivot 'produk_transaksi')
+            $transaksi->produks()->attach($produkIds);
 
-            DB::commit(); // Jika semua berhasil, simpan perubahan
+            // Kurangi stok untuk setiap produk yang terjual
+            foreach ($produkIds as $produkId) {
+                $produk = Produk::find($produkId);
+                if ($produk && $produk->stok > 0) {
+                    $produk->decrement('stok'); // Mengurangi stok sebanyak 1
+                } else {
+                    // Jika stok habis saat proses, batalkan transaksi
+                    throw new \Exception("Stok untuk produk {$produk->nama_produk} tidak mencukupi.");
+                }
+            }
 
-            return redirect()->route('transaksis.index')->with('success', 'Transaksi berhasil dibuat.');
+            DB::commit(); // Simpan semua perubahan jika tidak ada error
+
+            return redirect()->route('transaksis.index')->with('success', 'Transaksi berhasil ditambahkan.');
 
         } catch (\Exception $e) {
-            DB::rollBack(); // Jika ada error, batalkan semua perubahan
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
+            DB::rollBack(); // Batalkan semua operasi jika terjadi error
+
+            // Redirect kembali dengan pesan error
+            return redirect()->back()->with('error', 'Gagal menyimpan transaksi: ' . $e->getMessage())->withInput();
         }
     }
 
-    public function show(Transaksi $transaksi)
-    {
-        return view('transaksis.show', compact('transaksi'));
-    }
-
-    // Menggunakan Route Model Binding
-    public function edit(Transaksi $transaksi)
-    {
-        // Anda perlu mengirimkan data produk dan user untuk form edit
-        $users = User::all();
-        $produks = Produk::all();
-        return view('transaksis.edit', compact('transaksi', 'users', 'produks'));
-    }
-
-    // Menggunakan Route Model Binding
-    public function update(Request $request, Transaksi $transaksi)
-    {
-        $request->validate([
-            // ... aturan validasi untuk update ...
-            'status' => 'required|in:pending,success,failed',
-        ]);
-
-        $transaksi->update($request->all());
-
-        return redirect()->route('transaksis.index')->with('success', 'Status transaksi berhasil diperbarui.');
-    }
-
-    // Menggunakan Route Model Binding
+    /**
+     * Menghapus transaksi dari database.
+     */
     public function destroy(Transaksi $transaksi)
     {
+        // Note: Mengembalikan stok saat transaksi dihapus bisa jadi kompleks
+        // (misal: apakah produk masih ada, dll). Untuk saat ini, kita hanya hapus.
+        // Jika diperlukan, logika pengembalian stok bisa ditambahkan di sini.
+
+        // Hapus relasi di tabel pivot terlebih dahulu
+        $transaksi->produks()->detach();
+
+        // Hapus transaksi utama
         $transaksi->delete();
+
         return redirect()->route('transaksis.index')->with('success', 'Transaksi berhasil dihapus.');
     }
 }

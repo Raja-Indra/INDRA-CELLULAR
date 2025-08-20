@@ -91,7 +91,8 @@ namespace App\Models{
  * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Produk $produk
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Produk> $produks
+ * @property-read int|null $produks_count
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi newQuery()

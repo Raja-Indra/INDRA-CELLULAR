@@ -12,14 +12,18 @@ return new class extends Migration
     public function up()
     {
     Schema::create('sessions', function (Blueprint $table) {
-        $table->string('id')->primary();
-        $table->string('user_id')->nullable();  // Pastikan user_id bertipe string
+        $table->string('id', 100)->primary();
+        $table->string('user_id', 100)->nullable(); // id user bisa null
         $table->text('payload');
         $table->integer('last_activity');
         $table->text('user_agent')->nullable();
 
-        $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+        $table->foreign('user_id')
+            ->references('id')
+            ->on('users')
+            ->onDelete('cascade');
     });
+
     }
 
     public function down()
