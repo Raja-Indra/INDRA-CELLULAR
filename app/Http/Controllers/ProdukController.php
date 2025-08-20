@@ -17,6 +17,7 @@ class ProdukController extends Controller
         $pk = Produk::with('provider')->get();
         $pr = Provider::all(); // Ambil semua provider
 
+
         return view('produks.index', compact('pk', 'pr'));
     }
 

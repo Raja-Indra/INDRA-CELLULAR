@@ -38,6 +38,7 @@
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Daftar Produk</h3>
+
                             <div class="card-tools">
                                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createModal">
                                     <i class="fas fa-plus"></i> Tambah Produk
@@ -93,12 +94,17 @@
 
                                         <td class="text-center">
                                             {{-- Tombol Aksi Anda (tidak perlu diubah) --}}
-                                            <a href="#" class="btn btn-info btn-sm"
-                                                onclick="tampilkanDetailProduk('{{ $produk->id }}', '{{ $produk->provider_id }}', '{{ $produk->nama_produk }}', '{{ $produk->harga_modal }}', '{{ $produk->harga_jual }}', '{{ $produk->stok }}', '{{ $produk->jenis }}')">
+                                            <a href="#" class="btn btn-info btn-sm btn-view-produk"
+                                                data-id="{{ $produk->id }}"
+                                                data-nama_produk="{{ $produk->nama_produk ?? '' }}"
+                                                data-harga_modal="{{ $produk->harga_modal ?? 0 }}"
+                                                data-harga_jual="{{ $produk->harga_jual ?? 0 }}"
+                                                data-stok="{{ $produk->stok }}"
+                                                data-jenis="{{ $produk->jenis }}">
                                                 <i class="fas fa-eye"></i> Lihat
                                             </a>
 
-                                            <a href="#" class="btn btn-warning btn-sm btn-edit"
+                                            <a href="#" class="btn btn-warning btn-sm btn-edit-produk"
                                                 data-id="{{ $produk->id }}"
                                                 data-provider_id="{{ $produk->provider_id }}"
                                                 data-nama_produk="{{ $produk->nama_produk }}"
@@ -145,12 +151,13 @@
 
                                                     </select>
                                                 </div>
+                                                {{-- Pastikan bagian ini sama persis --}}
                                                 <div class="form-group">
                                                     <label for="provider_id">Provider</label>
                                                     <select class="form-control" id="provider_id" name="provider_id" required>
                                                         <option value="" disabled selected>Pilih Provider</option>
                                                         @foreach($pr as $provider)
-                                                             <option value="{{ $provider->id }}" data-kategori="{{ $provider->kategori }}">
+                                                            <option value="{{ $provider->id }}" data-kategori="{{ $provider->kategori }}">
                                                                 {{ $provider->nama_provider }}
                                                             </option>
                                                         @endforeach
@@ -276,12 +283,12 @@
                                                         <option value="Saldo">Saldo</option>
                                                     </select>
                                                 </div>
+                                                {{-- Pastikan bagian ini juga sama persis --}}
                                                 <div class="mb-3">
                                                     <label for="providerId" class="form-label">Provider</label>
                                                     <select class="form-control" id="providerId" name="provider_id" required>
                                                         <option value="" disabled>Pilih Provider</option>
                                                         @foreach($pr as $provider)
-                                                            {{-- TAMBAHKAN data-kategori DI SINI --}}
                                                             <option value="{{ $provider->id }}" data-kategori="{{ $provider->kategori }}">
                                                                 {{ $provider->nama_provider }}
                                                             </option>

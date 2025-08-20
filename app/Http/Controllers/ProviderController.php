@@ -7,74 +7,48 @@ use Illuminate\Http\Request;
 
 class ProviderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $pr = Provider::all();
         return view('providers.index', compact('pr'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('providers.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
+        // TAMBAHKAN VALIDASI UNTUK KATEGORI
         $request->validate([
-            'nama_provider' => 'required',
+            'nama_provider' => 'required|string|max:255|unique:providers',
+            'kategori' => 'required|string|in:pulsa,paket data,voucher,saldo,aksesoris',
         ]);
 
         Provider::create($request->all());
-        return redirect()->route('providers.index')->with('success', 'Provider berhasil ditambahkan.');
+
+        return redirect()->route('providers.index')
+                         ->with('success', 'Provider berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Provider $pr)
-    {
-        return view('providers.show', compact('pr'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        $pr = Provider::findOrFail($id); // Menemukan provider berdasarkan ID
-        return view('providers.edit', compact('pr'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
+        $provider = Provider::findOrFail($id);
+
+        // TAMBAHKAN VALIDASI UNTUK KATEGORI
         $request->validate([
-            'nama_provider' => 'required',
+            'nama_provider' => 'required|string|max:255|unique:providers,nama_provider,' . $id,
+            'kategori' => 'required|string|in:pulsa,paket data,voucher,saldo,aksesoris',
         ]);
 
-        $pr = Provider::findOrFail($id);
-        $pr->update($request->all());
-        return redirect()->route('providers.index')->with('success', 'Provider berhasil diperbarui.');
+        $provider->update($request->all());
+
+        return redirect()->route('providers.index')
+                         ->with('success', 'Provider berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
-        $pr = Provider::find($id);
-        $pr->delete();
-        return redirect()->route('providers.index')->with('success', 'Provider berhasil dihapus.');
+        $provider = Provider::findOrFail($id);
+        $provider->delete();
+
+        return redirect()->route('providers.index')
+                         ->with('success', 'Provider berhasil dihapus.');
     }
 }

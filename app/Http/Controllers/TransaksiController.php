@@ -3,100 +3,114 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaksi;
-use App\Models\User;
 use App\Models\Produk;
+use App\Models\User;
+use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB; // Penting untuk database transaction
 
 class TransaksiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $t = Transaksi::with(['user', 'produk'])->get();
-        return view('transaksis.index', compact('t'));
+        // Ambil semua data yang dibutuhkan oleh halaman index DAN modal
+        $t = Transaksi::with(['user', 'produk.provider'])->latest()->get();
+        $users = User::all();
+        $produks = Produk::where('stok', '>', 0)->get();
+
+        return view('transaksis.index', compact('t', 'users', 'produks'));
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $u = User::all();
-        $pk = Produk::all();
-        return view('transaksis.create', compact('u', 'pk'));    }
+        $users = User::all();
+        $produks = Produk::where('stok', '>', 0)->get(); // Hanya produk yang ada stok
+        return view('transaksis.create', compact('users', 'produks'));
+    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // Validasi input
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'produk_id' => 'required|exists:produks,id',
-            'nomor_pelanggan' => 'required|string|max:15',
-            'total_harga' => 'required|numeric',
-            'status' => 'required|string|max:50',
+            'nomor_pelanggan' => 'required|string|min:5|max:20',
         ]);
 
-        // Simpan transaksi baru
-        Transaksi::create($request->all());
+        // Gunakan Database Transaction untuk memastikan integritas data
+        DB::beginTransaction();
+        try {
+            $produk = Produk::findOrFail($request->produk_id);
+            $settingSaldo = Setting::where('key', 'saldo_utama')->first();
+            $saldoUtama = $settingSaldo ? (float)$settingSaldo->value : 0;
 
-        return redirect()->route('transaksis.index')
-                         ->with('success', 'Transaksi berhasil dibuat.');
+            // 1. Cek Saldo Utama
+            if ($saldoUtama < $produk->harga_modal) {
+                throw new \Exception('Transaksi gagal, saldo utama tidak mencukupi.');
+            }
+
+            // 2. Cek Stok Produk
+            if ($produk->stok <= 0) {
+                throw new \Exception('Transaksi gagal, stok produk habis.');
+            }
+
+            // 3. Buat Transaksi Baru
+            Transaksi::create([
+                'user_id' => $request->user_id,
+                'produk_id' => $request->produk_id,
+                'nomor_pelanggan' => $request->nomor_pelanggan,
+                'total_harga' => $produk->harga_jual, // Ambil harga jual dari produk
+                'status' => 'success', // Langsung set sukses
+            ]);
+
+            // 4. Kurangi Stok Produk
+            $produk->decrement('stok');
+
+            // 5. Kurangi Saldo Utama
+            $saldoBaru = $saldoUtama - $produk->harga_modal;
+            $settingSaldo->update(['value' => $saldoBaru]);
+
+            DB::commit(); // Jika semua berhasil, simpan perubahan
+
+            return redirect()->route('transaksis.index')->with('success', 'Transaksi berhasil dibuat.');
+
+        } catch (\Exception $e) {
+            DB::rollBack(); // Jika ada error, batalkan semua perubahan
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage())->withInput();
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Transaksi $t)
+    public function show(Transaksi $transaksi)
     {
-        return view('transaksis.show', compact('t'));
+        return view('transaksis.show', compact('transaksi'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Transaksi $t)
+    // Menggunakan Route Model Binding
+    public function edit(Transaksi $transaksi)
     {
-        // Ambil data user dan produk untuk dropdown
-        $u = User::all();
-        $pk = Produk::all();
-        return view('transaksis.edit', compact('t', 'u', 'pk'));    }
+        // Anda perlu mengirimkan data produk dan user untuk form edit
+        $users = User::all();
+        $produks = Produk::all();
+        return view('transaksis.edit', compact('transaksi', 'users', 'produks'));
+    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Transaksi $t)
+    // Menggunakan Route Model Binding
+    public function update(Request $request, Transaksi $transaksi)
     {
-         // Validasi input
-         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'produk_id' => 'required|exists:produks,id',
-            'nomor_pelanggan' => 'required|string|max:15',
-            'total_harga' => 'required|numeric',
-            'status' => 'required|string|max:50',
+        $request->validate([
+            // ... aturan validasi untuk update ...
+            'status' => 'required|in:pending,success,failed',
         ]);
 
-        // Perbarui data transaksi
-        $t->update($request->all());
+        $transaksi->update($request->all());
 
-        return redirect()->route('transaksis.index')
-                         ->with('success', 'Transaksi berhasil diperbarui.');
+        return redirect()->route('transaksis.index')->with('success', 'Status transaksi berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
+    // Menggunakan Route Model Binding
+    public function destroy(Transaksi $transaksi)
     {
-        $t = Transaksi::find($id);
-        $t->delete();
-
-        return redirect()->route('transaksis.index')
-                         ->with('success', 'Transaksi berhasil dihapus.');
-
+        $transaksi->delete();
+        return redirect()->route('transaksis.index')->with('success', 'Transaksi berhasil dihapus.');
     }
 }

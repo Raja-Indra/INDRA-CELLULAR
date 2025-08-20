@@ -15,9 +15,9 @@ namespace App\Models{
 /**
  * @property string $id
  * @property string $provider_id
- * @property string $nama_produk
- * @property string $harga_modal
- * @property string $harga_jual
+ * @property string|null $nama_produk
+ * @property string|null $harga_modal
+ * @property string|null $harga_jual
  * @property int $stok
  * @property string $jenis
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -64,10 +64,29 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $key
+ * @property string|null $value
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Setting whereValue($value)
+ */
+	class Setting extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * @property string $id
  * @property string $user_id
  * @property string $produk_id
- * @property string $nomor_pelanggan
+ * @property string|null $nomor_pelanggan
  * @property string $total_harga
  * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at

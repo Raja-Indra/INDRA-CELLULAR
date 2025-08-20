@@ -19,8 +19,13 @@ class Transaksi extends Model
         parent::boot();
 
         static::creating(function ($transaksi) {
-            $transaksi->id = 'TRN' . time(); // Contoh: PR1706958743
-        });
+        // Cek untuk memastikan ID belum di-set secara manual
+        if (empty($transaksi->id)) {
+            // Format ID baru: TRN-YYYYMMDDHHMMSS-5KarakterAcak
+            // Contoh: TRN-20250816165500-A8X2B
+            $transaksi->id = 'TRN-' . date('YmdHis') . '-' . Str::random(5);
+        }
+    });
     }
     // Relasi ke tabel User
     public function user()
