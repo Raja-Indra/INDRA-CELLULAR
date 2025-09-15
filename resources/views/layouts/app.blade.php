@@ -27,6 +27,9 @@
   <aside class="control-sidebar control-sidebar-dark">
   </aside>
 </div>
+
     @include('layouts.script')
+    @stack('scripts')
+
 </body>
 </html>
