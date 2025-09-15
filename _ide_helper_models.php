@@ -19,7 +19,7 @@ namespace App\Models{
  * @property string|null $harga_modal
  * @property string|null $harga_jual
  * @property int $stok
- * @property string $jenis
+ * @property string|null $jenis
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Provider $provider
@@ -85,9 +85,8 @@ namespace App\Models{
 /**
  * @property string $id
  * @property string $user_id
- * @property string $produk_id
- * @property string|null $nomor_pelanggan
- * @property string $total_harga
+ * @property string $nomor_pelanggan
+ * @property int $total_harga
  * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -100,7 +99,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereNomorPelanggan($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereProdukId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereTotalHarga($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereUpdatedAt($value)

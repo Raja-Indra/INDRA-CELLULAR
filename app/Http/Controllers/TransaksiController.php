@@ -36,25 +36,23 @@ class TransaksiController extends Controller
         $rules = [
             'user_id'         => 'required|string|exists:users,id',
             'nomor_pelanggan' => 'required|string|max:25',
-            'total_harga'     => 'required|numeric|min:1',
+            'total_harga'     => 'required|numeric|min:0',
             'produks'         => 'required|array|min:1',
-            // Perbaikan: Validasi sebagai string, bukan integer
-            'produks.*.id'    => 'required|string|exists:produks,id'
+            'produks.*.id'    => 'required|string|exists:produks,id',
+            'produks.*.jumlah' => 'required|integer|min:1', // Validasi untuk 'jumlah'
+            'produks.*.harga'  => 'required|numeric|min:0',  // Validasi untuk 'harga'
         ];
 
         // 2. Pesan Kustom untuk Error
         $messages = [
             'produks.required' => 'Keranjang transaksi tidak boleh kosong.',
-            'produks.min'      => 'Anda harus menambahkan setidaknya satu produk ke transaksi.',
-            'produks.*.id.exists' => 'Salah satu produk yang dipilih tidak valid atau sudah tidak ada.'
+            'produks.*.id.exists' => 'Salah satu produk yang dipilih tidak valid.',
         ];
 
         // 3. Menjalankan Validasi
         $validatedData = $request->validate($rules, $messages);
 
         // 4. Menggunakan Database Transaction
-        // Ini memastikan semua operasi (buat transaksi, kurangi stok, simpan relasi) berhasil.
-        // Jika ada satu yang gagal, semua akan dibatalkan (rollback).
         try {
             DB::beginTransaction();
 
@@ -67,22 +65,33 @@ class TransaksiController extends Controller
                 'status'          => 'success', // Status default
             ]);
 
-            // Ambil semua ID produk dari request
-            $produkIds = collect($validatedData['produks'])->pluck('id');
+            // Siapkan data untuk tabel pivot dan kurangi stok
+            $dataToAttach = [];
+            foreach ($validatedData['produks'] as $produkData) {
+                $produk = Produk::find($produkData['id']);
+                if (!$produk) {
+                    throw new \Exception("Produk dengan ID {$produkData['id']} tidak ditemukan.");
+                }
 
-            // Lampirkan semua produk ke transaksi (mengisi tabel pivot 'produk_transaksi')
-            $transaksi->produks()->attach($produkIds);
+                $jumlahBeli = $produkData['jumlah'];
 
-            // Kurangi stok untuk setiap produk yang terjual
-            foreach ($produkIds as $produkId) {
-                $produk = Produk::find($produkId);
-                if ($produk && $produk->stok > 0) {
-                    $produk->decrement('stok'); // Mengurangi stok sebanyak 1
-                } else {
-                    // Jika stok habis saat proses, batalkan transaksi
+                // Cek ketersediaan stok
+                if ($produk->stok < $jumlahBeli) {
                     throw new \Exception("Stok untuk produk {$produk->nama_produk} tidak mencukupi.");
                 }
+
+                // Siapkan data untuk dilampirkan ke tabel pivot
+                $dataToAttach[$produk->id] = [
+                    'jumlah' => $jumlahBeli,
+                    'harga'  => $produkData['harga']
+                ];
+
+                // Kurangi stok produk
+                $produk->decrement('stok', $jumlahBeli);
             }
+
+            // Lampirkan semua produk ke transaksi dengan data pivot (jumlah dan harga)
+            $transaksi->produks()->attach($dataToAttach);
 
             DB::commit(); // Simpan semua perubahan jika tidak ada error
 

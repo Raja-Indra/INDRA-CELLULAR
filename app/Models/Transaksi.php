@@ -74,6 +74,6 @@ class Transaksi extends Model
     public function produks()
     {
         // Nama tabel pivot (argumen kedua) dan foreign key (opsional) bisa disesuaikan
-        return $this->belongsToMany(Produk::class, 'produk_transaksi');
+    return $this->belongsToMany(Produk::class)->withPivot('jumlah', 'harga'); // DIUBAH
     }
 }

@@ -11,6 +11,10 @@
             border-top: 2px solid #dee2e6;
             margin-top: 10px;
         }
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+        }
     </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -66,8 +70,9 @@
                                             @foreach($produks as $produk)
                                                 <option value="{{ $produk->id }}"
                                                         data-harga="{{ $produk->harga_jual }}"
-                                                        data-nama="{{ $produk->provider->nama_provider }} - {{ $produk->nama_produk ?? 'Stok ' . number_format($produk->stok, 0) }}">
-                                                    {{ $produk->provider->nama_provider }} - {{ $produk->nama_produk ?? 'Stok ' . number_format($produk->stok, 0) }} (Rp {{ number_format($produk->harga_jual) }})
+                                                        data-stok="{{ $produk->stok }}"
+                                                        data-nama="{{ $produk->provider->nama_provider }} - {{ $produk->nama_produk }}">
+                                                    {{ $produk->provider->nama_provider }} - {{ $produk->nama_produk }} (Stok: {{ $produk->stok }} | Rp {{ number_format($produk->harga_jual) }})
                                                 </option>
                                             @endforeach
                                         </select>
@@ -82,6 +87,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Produk</th>
+                                                <th style="width: 100px;">Jumlah</th>
                                                 <th style="width: 120px;">Harga</th>
                                                 <th style="width: 50px;">Aksi</th>
                                             </tr>
@@ -90,17 +96,17 @@
                                     </table>
                                     <hr>
                                     <div class="summary-row">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="mb-2 d-flex justify-content-between align-items-center">
                                             <h4 class="mb-0">Total Belanja:</h4>
                                             <h4 id="total-harga-display" class="mb-0" style="font-weight: bold; color: blue;">Rp 0</h4>
                                         </div>
-                                        <div class="form-group row mb-2">
+                                        <div class="mb-2 form-group row">
                                             <label for="uang_bayar" class="col-sm-4 col-form-label"><h5 class="mb-0">Uang Bayar:</h5></label>
                                             <div class="col-sm-8">
                                                 <input type="number" id="uang_bayar" class="form-control form-control-lg" placeholder="Masukkan jumlah uang...">
                                             </div>
                                         </div>
-                                        <div class="d-flex justify-content-between align-items-center mt-3" style="background-color: #f0f0f0; padding: 10px; border-radius: 5px;">
+                                        <div class="mt-3 d-flex justify-content-between align-items-center" style="background-color: #f0f0f0; padding: 10px; border-radius: 5px;">
                                             <h4 class="mb-0">Kembalian:</h4>
                                             <h4 id="kembalian-display" class="mb-0" style="font-weight: bold; color: green;">Rp 0</h4>
                                         </div>
@@ -137,7 +143,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- INI BAGIAN YANG SEBELUMNYA HILANG --}}
                                 @foreach($transaksis as $transaksi)
                                 <tr>
                                     <td>{{ $transaksi->id }}</td>
@@ -147,7 +152,7 @@
                                         @if($transaksi->produks->isNotEmpty())
                                             <ul>
                                             @foreach($transaksi->produks as $produk)
-                                                <li>{{ $produk->provider->nama_provider }} - {{ $produk->nama_produk ?? 'Stok ' . number_format($produk->stok, 0) }}</li>
+                                                <li>{{ $produk->pivot->jumlah }}x {{ $produk->provider->nama_provider }} - {{ $produk->nama_produk }}</li>
                                             @endforeach
                                             </ul>
                                         @else
@@ -189,27 +194,27 @@
 {{-- JAVASCRIPT UNTUK FITUR TRANSAKSI --}}
 <script>
 $(document).ready(function() {
-    let totalHarga = 0;
-    let produkList = [];
+    let produkList = []; // Format: { id, nama, harga, jumlah, stok }
 
     function formatRupiah(angka) {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
     }
 
-    function hitungKembalian() {
-        const uangBayar = parseFloat($('#uang_bayar').val()) || 0;
-        const kembalian = uangBayar - totalHarga;
-        $('#kembalian-display').text(kembalian >= 0 ? formatRupiah(kembalian) : 'Rp 0');
-    }
-
     function updateTotal() {
-        totalHarga = 0;
+        let totalHarga = 0;
         produkList.forEach(item => {
-            totalHarga += parseFloat(item.harga);
+            totalHarga += parseFloat(item.harga) * parseInt(item.jumlah);
         });
         $('#total-harga-display').text(formatRupiah(totalHarga));
         $('#total_harga_input').val(totalHarga);
         hitungKembalian();
+    }
+
+    function hitungKembalian() {
+        const totalHarga = parseFloat($('#total_harga_input').val()) || 0;
+        const uangBayar = parseFloat($('#uang_bayar').val()) || 0;
+        const kembalian = uangBayar - totalHarga;
+        $('#kembalian-display').text(kembalian >= 0 ? formatRupiah(kembalian) : 'Rp 0');
     }
 
     function renderCart() {
@@ -220,8 +225,12 @@ $(document).ready(function() {
                     <td>
                         ${item.nama}
                         <input type="hidden" name="produks[${index}][id]" value="${item.id}">
+                        <input type="hidden" name="produks[${index}][harga]" value="${item.harga}">
                     </td>
-                    <td>${formatRupiah(item.harga)}</td>
+                    <td>
+                        <input type="number" name="produks[${index}][jumlah]" class="form-control form-control-sm quantity-input" value="${item.jumlah}" min="1" max="${item.stok}" data-index="${index}">
+                    </td>
+                    <td>${formatRupiah(item.harga * item.jumlah)}</td>
                     <td>
                         <a href="#" class="hapus-produk" data-index="${index}"><i class="fas fa-times-circle"></i></a>
                     </td>
@@ -235,12 +244,27 @@ $(document).ready(function() {
     $('#tambah-produk-btn').on('click', function() {
         const selectedOption = $('#produk_select').find('option:selected');
         const produkId = selectedOption.val();
+
         if (produkId) {
-            produkList.push({
-                id: produkId,
-                nama: selectedOption.data('nama'),
-                harga: selectedOption.data('harga')
-            });
+            const existingProdukIndex = produkList.findIndex(p => p.id === produkId);
+
+            if (existingProdukIndex > -1) {
+                // Jika produk sudah ada, tambahkan jumlahnya
+                if(produkList[existingProdukIndex].jumlah < produkList[existingProdukIndex].stok) {
+                    produkList[existingProdukIndex].jumlah++;
+                } else {
+                    alert('Stok produk tidak mencukupi.');
+                }
+            } else {
+                // Jika produk baru, tambahkan ke keranjang
+                produkList.push({
+                    id: produkId,
+                    nama: selectedOption.data('nama'),
+                    harga: selectedOption.data('harga'),
+                    stok: selectedOption.data('stok'),
+                    jumlah: 1
+                });
+            }
             renderCart();
             $('#produk_select').val('');
         } else {
@@ -248,10 +272,32 @@ $(document).ready(function() {
         }
     });
 
+    // Event listener untuk hapus produk
     $(document).on('click', '.hapus-produk', function(e) {
         e.preventDefault();
         const indexToRemove = $(this).data('index');
         produkList.splice(indexToRemove, 1);
+        renderCart();
+    });
+
+    // Event listener untuk mengubah jumlah
+    $(document).on('change', '.quantity-input', function() {
+        const index = $(this).data('index');
+        let newJumlah = parseInt($(this).val());
+        const stok = produkList[index].stok;
+
+        if (newJumlah > stok) {
+            alert('Jumlah melebihi stok yang tersedia.');
+            newJumlah = stok;
+            $(this).val(stok);
+        }
+
+        if(newJumlah < 1) {
+            newJumlah = 1;
+            $(this).val(1);
+        }
+
+        produkList[index].jumlah = newJumlah;
         renderCart();
     });
 
