@@ -35,7 +35,7 @@ class AuthController extends Controller
             $user = Auth::user();
             if ($user->role === 'admin') {
                 // Jika role adalah admin, arahkan ke dashboard admin
-                return redirect()->intended(route('admin.dashboard'));
+                return redirect()->intended(route('dashboard'));
             }
 
             // Jika role adalah karyawan (atau role lainnya)
