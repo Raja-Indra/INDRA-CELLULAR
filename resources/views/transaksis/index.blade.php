@@ -133,7 +133,7 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Waktu</th>
+                                    <th>Tanggal</th>
                                     <th>User</th>
                                     <th>Produk</th>
                                     <th>Nomor Pelanggan</th>

@@ -58,6 +58,7 @@
                                         <th>Provider</th>
                                         <th>Harga Modal</th>
                                         <th>Harga Jual</th>
+                                        <th>Keuntungan</th>
                                         <th>Stok / Nominal</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -81,6 +82,11 @@
                                         {{-- Jika harga_jual ada, format, jika tidak tampilkan '-' --}}
                                         <td class="text-center">
                                             {{ $produk->harga_jual ? 'Rp ' . number_format($produk->harga_jual, 0, ',', '.') : '-' }}
+                                        </td>
+
+                                        {{-- Menampilkan keuntungan --}}
+                                        <td class="text-center">
+                                            {{ $produk->keuntungan ? 'Rp ' . number_format($produk->keuntungan, 0, ',', '.') : '-' }}
                                         </td>
 
                                         {{-- Jika jenisnya Saldo, format stok sebagai Rupiah, jika tidak, tampilkan biasa --}}
@@ -129,7 +135,7 @@
                             </table>
                             <!-- Modal Tambah Produk -->
                             <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createLabel" aria-hidden="true">
-                                <div class="modal-dialog">
+                                <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="createLabel">Tambah Produk</h5>
@@ -202,7 +208,7 @@
 
                             {{-- Modal Lihat Produk --}}
                             <div class="modal fade" id="viewProdukModal" tabindex="-1" aria-labelledby="viewProdukLabel" aria-hidden="true">
-                                <div class="modal-dialog">
+                                <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="viewProdukLabel">Detail Produk</h5>
@@ -256,7 +262,7 @@
 
                             <!-- Modal Edit Produk -->
                             <div class="modal fade" id="editProdukModal" tabindex="-1" aria-labelledby="editProdukModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
+                                <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="editProdukModalLabel">Edit Produk</h5>

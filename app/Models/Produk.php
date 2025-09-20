@@ -34,4 +34,14 @@ class Produk extends Model
     {
         return $this->hasMany(Transaksi::class);
     }
+
+    /**
+     * Accessor untuk menghitung keuntungan.
+     *
+     * @return float
+     */
+    public function getKeuntunganAttribute()
+    {
+        return $this->harga_jual - $this->harga_modal;
+    }
 }

@@ -90,7 +90,7 @@
                                 {{-- MODAL CREATE (dengan field Kategori) --}}
                                 {{-- ============================================= --}}
                                 <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
+                                    <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="createLabel">Tambah Provider</h5>
@@ -131,7 +131,7 @@
                                 {{-- MODAL LIHAT (dengan field Kategori) --}}
                                 {{-- ============================================= --}}
                                 <div class="modal fade" id="viewProviderModal" tabindex="-1" aria-labelledby="viewProviderLabel" aria-hidden="true">
-                                     <div class="modal-dialog">
+                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="viewProviderLabel">Detail Provider</h5>
@@ -165,7 +165,7 @@
                                 {{-- MODAL EDIT (dengan field Kategori) --}}
                                 {{-- ============================================= --}}
                                 <div class="modal fade" id="editProviderModal" tabindex="-1" aria-labelledby="editProviderLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
+                                    <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="editProviderLabel">Edit Provider</h5>

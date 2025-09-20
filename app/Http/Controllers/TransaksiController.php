@@ -40,7 +40,7 @@ class TransaksiController extends Controller
             'produks'         => 'required|array|min:1',
             'produks.*.id'    => 'required|string|exists:produks,id',
             'produks.*.jumlah' => 'required|integer|min:1', // Validasi untuk 'jumlah'
-            'produks.*.harga'  => 'required|numeric|min:0',  // Validasi untuk 'harga'
+            'produks.*.harga'  => 'required|numeric|min:1',  // Validasi untuk 'harga'
         ];
 
         // 2. Pesan Kustom untuk Error
@@ -80,10 +80,17 @@ class TransaksiController extends Controller
                     throw new \Exception("Stok untuk produk {$produk->nama_produk} tidak mencukupi.");
                 }
 
+                // Hitung keuntungan untuk item ini
+                $hargaJualSaatTransaksi = $produkData['harga'];
+                $hargaModalSaatTransaksi = $produk->harga_modal;
+                $keuntungan = ($hargaJualSaatTransaksi - $hargaModalSaatTransaksi) * $jumlahBeli;
+
                 // Siapkan data untuk dilampirkan ke tabel pivot
                 $dataToAttach[$produk->id] = [
-                    'jumlah' => $jumlahBeli,
-                    'harga'  => $produkData['harga']
+                    'jumlah'      => $jumlahBeli,
+                    'harga_jual'  => $hargaJualSaatTransaksi,
+                    'harga_modal' => $hargaModalSaatTransaksi,
+                    'keuntungan'  => $keuntungan,
                 ];
 
                 // Kurangi stok produk

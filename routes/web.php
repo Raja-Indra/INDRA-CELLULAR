@@ -10,6 +10,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\CatatanHutangController;
 
 // --- Rute Publik (Bisa diakses tanpa login) ---
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -38,6 +39,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('providers', ProviderController::class);
     Route::resource('produks', ProdukController::class);
     Route::resource('users', UserController::class);
+    Route::resource('catatan_hutangs', CatatanHutangController::class);
 
     // Rute untuk logout
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');

@@ -44,6 +44,14 @@
                     </a>
                 </li>
 
+                {{-- Catatan Hutang (Top-level item) --}}
+                <li class="nav-item">
+                    <a href="{{ route('catatan_hutangs.index') }}" class="nav-link {{ request()->routeIs('catatan_hutangs.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-money-bill-wave"></i> {{-- Icon for debt records --}}
+                        <p>Catatan Hutang</p>
+                    </a>
+                </li>
+
                 {{-- Logika untuk membuka menu 'Kelola' secara otomatis --}}
                 @php
                     $isKelolaActive = request()->routeIs('users.*', 'produks.*', 'providers.*', 'transaksis.*');
@@ -89,4 +97,3 @@
     </div>
     <!-- /.sidebar -->
 </aside>
-

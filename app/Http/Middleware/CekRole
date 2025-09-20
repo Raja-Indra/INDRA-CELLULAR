@@ -1,0 +1,23 @@
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class CekRole
+{
+    public function handle(Request $request, Closure $next, ...$roles)
+    {
+        if (!Auth::check() || !in_array(Auth::user()->role, $roles)) {
+            // Jika pengguna bukan admin, redirect ke halaman dashboard karyawan
+            if (Auth::user()->role === 'karyawan') {
+                return redirect('/karyawan/dashboard');
+            }
+            // Jika tidak, redirect ke halaman login
+            return redirect('login');
+        }
+
+        return $next($request);
+    }
+}

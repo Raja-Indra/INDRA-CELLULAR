@@ -37,9 +37,14 @@ class AuthController extends Controller
                 // Jika role adalah admin, arahkan ke dashboard admin
                 return redirect()->intended(route('dashboard'));
             }
+            if (Auth::attempt($credentials)) {
+                    $user = Auth::user();
+                    if ($user->role === 'karyawan') {
+                        return redirect()->intended('/karyawan/dashboard');
+                    }
+                    return redirect()->intended('/dashboard');
+            }
 
-            // Jika role adalah karyawan (atau role lainnya)
-            return redirect()->intended(route('dashboard'));
         }
 
         // 4. Jika gagal, kembali ke halaman login dengan pesan error
