@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\TransaksiController;
+
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\UserController;
@@ -35,7 +35,6 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
     // Rute Resource (CRUD)
-    Route::resource('transaksis', TransaksiController::class);
     Route::resource('providers', ProviderController::class);
     Route::resource('produks', ProdukController::class);
     Route::resource('users', UserController::class);

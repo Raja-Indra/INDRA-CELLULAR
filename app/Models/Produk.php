@@ -29,12 +29,6 @@ class Produk extends Model
         return $this->belongsTo(Provider::class, 'provider_id', 'id');
     }
 
-    // Relasi ke tabel Transaksi
-    public function transaksis()
-    {
-        return $this->hasMany(Transaksi::class);
-    }
-
     /**
      * Accessor untuk menghitung keuntungan.
      *

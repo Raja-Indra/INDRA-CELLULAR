@@ -13,6 +13,31 @@
 
 namespace App\Models{
 /**
+ * @property int $id
+ * @property string $nama_pelanggan
+ * @property string|null $nomor_hp
+ * @property string|null $alamat
+ * @property string|null $keterangan
+ * @property string $nominal_hutang
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CatatanHutang newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CatatanHutang newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CatatanHutang query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CatatanHutang whereAlamat($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CatatanHutang whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CatatanHutang whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CatatanHutang whereKeterangan($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CatatanHutang whereNamaPelanggan($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CatatanHutang whereNominalHutang($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CatatanHutang whereNomorHp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CatatanHutang whereUpdatedAt($value)
+ */
+	class CatatanHutang extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * @property string $id
  * @property string $provider_id
  * @property string|null $nama_produk
@@ -22,9 +47,8 @@ namespace App\Models{
  * @property string|null $jenis
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read float $keuntungan
  * @property-read \App\Models\Provider $provider
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaksi> $transaksis
- * @property-read int|null $transaksis_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Produk newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Produk newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Produk query()
@@ -84,32 +108,6 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property string $id
- * @property string $user_id
- * @property string $nomor_pelanggan
- * @property int $total_harga
- * @property string $status
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Produk> $produks
- * @property-read int|null $produks_count
- * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereNomorPelanggan($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereTotalHarga($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereUserId($value)
- */
-	class Transaksi extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * @property string $id
  * @property string $name
  * @property string $email
  * @property string|null $email_verified_at
@@ -122,8 +120,6 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaksi> $transaksis
- * @property-read int|null $transaksis_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()

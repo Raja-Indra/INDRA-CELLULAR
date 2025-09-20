@@ -1,24 +1,40 @@
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <link rel="stylesheet" href="{{ asset('plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('plugins/jqvmap/jqvmap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('plugins/daterangepicker/daterangepicker.css') }}">
-    <link rel="stylesheet" href="{{ asset('plugins/summernote/summernote-bs4.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+{{-- Google Font: Source Sans Pro --}}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+{{-- Font Awesome --}}
+<link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
+{{-- Ionicons --}}
+<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+{{-- Tempusdominus Bootstrap 4 --}}
+<link rel="stylesheet" href="{{ asset('plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+{{-- iCheck Bootstrap 4 --}}
+<link rel="stylesheet" href="{{ asset('plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+{{-- JQVMap --}}
+<link rel="stylesheet" href="{{ asset('plugins/jqvmap/jqvmap.min.css') }}">
+{{-- Theme style --}}
+<link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
+{{-- overlayScrollbars --}}
+<link rel="stylesheet" href="{{ asset('plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+{{-- Daterange picker --}}
+<link rel="stylesheet" href="{{ asset('plugins/daterangepicker/daterangepicker.css') }}">
+{{-- summernote --}}
+<link rel="stylesheet" href="{{ asset('plugins/summernote/summernote-bs4.min.css') }}">
+{{-- DataTables --}}
+<link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+<link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
 
-    <style>
-    /* CSS UNTUK LATAR BELAKANG */
+{{-- **INI BAGIAN PENTINGNYA** --}}
+{{-- CSS Kustom Anda --}}
+<link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+
+<style>
+        /* CSS UNTUK LATAR BELAKANG */
+    /* CSS UNTUK LATAR BELAKANG LOGIN */
     body.login-page {
-        background-image: url('{{ asset('dist/img/spanduk.jpg') }}');
+        /* Path relatif dari folder css ke folder dist/img */
+        background-image: url('../dist/img/spanduk.jpg');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -53,4 +69,30 @@
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
         transform: translateY(-3px); /* Sedikit mengangkat card ke atas */
     }
+
+        /* Warna latar belakang utama sidebar */
+    .main-sidebar.sidebar-custom-blue {
+        /* Menggunakan gradasi linear dari atas (warna asli) ke bawah (warna lebih gelap) */
+        background: linear-gradient(150deg, #ff6456, #e85a4d);
+    }
+
+    /* Warna untuk brand-link, teks menu, dan ikon */
+    .sidebar-custom-blue .brand-link,
+    .sidebar-custom-blue .nav-sidebar .nav-link p,
+    .sidebar-custom-blue .nav-sidebar .nav-link i {
+        color: #ffffff; /* Warna putih agar kontras dengan biru */
+    }
+
+    /* Efek saat kursor mouse menyentuh menu (hover) */
+    .sidebar-custom-blue .nav-sidebar .nav-item .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1); /* Putih transparan tipis */
+    }
+
+    /* Latar belakang untuk menu yang sedang aktif/dipilih */
+    .sidebar-custom-blue .nav-sidebar > .nav-item > .nav-link.active,
+    .sidebar-custom-blue .nav-sidebar > .nav-item .nav-treeview > .nav-item > .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.403); /* Putih transparan seperti permintaan Anda */
+        color: #ffffff;
+    }
+
 </style>

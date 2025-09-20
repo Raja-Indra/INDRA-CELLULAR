@@ -149,6 +149,8 @@
     </div>
 </section>
 
+
+
 <!-- Create Catatan Hutang Modal -->
 <div class="modal fade" id="createCatatanHutangModal" tabindex="-1" role="dialog" aria-labelledby="createCatatanHutangModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

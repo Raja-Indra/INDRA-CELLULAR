@@ -35,11 +35,4 @@ class User extends Authenticatable implements CanResetPassword // <-- Pastikan i
             $user->id = $prefix . time();
         });
     }
-
-
-    // Relasi ke tabel Transaksi
-    public function transaksis()
-    {
-        return $this->hasMany(Transaksi::class);
-    }
 }
