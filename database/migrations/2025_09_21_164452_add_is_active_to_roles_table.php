@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // Tambahkan kolom baru setelah kolom 'role'
-            $table->string('profile_photo_path', 2048)->nullable()->after('role');
+        Schema::table('roles', function (Blueprint $table) {
+            $table->boolean('is_active')->default(true)->after('description');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('profile_photo_path');
+        Schema::table('roles', function (Blueprint $table) {
+            $table->dropColumn('is_active');
         });
     }
 };

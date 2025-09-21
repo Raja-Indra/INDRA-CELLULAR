@@ -14,15 +14,6 @@ class Produk extends Model
     public $incrementing = false; // Matikan auto-increment untuk ID
     protected $keyType = 'string'; // Pastikan ID adalah string
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($produk) {
-            $produk->id = 'PDK' . time(); // Contoh ID: PDK1706958743
-        });
-    }
-
     // Relasi ke tabel Provider
     public function provider()
     {

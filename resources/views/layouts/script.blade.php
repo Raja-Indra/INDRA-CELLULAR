@@ -55,52 +55,95 @@ $(function() {
     // Tombol lihat detail user
     $('.btn-view').on('click', function(e) {
         e.preventDefault();
-        let id = $(this).data('id');
         let name = $(this).data('name');
         let email = $(this).data('email');
         let phone = $(this).data('phone');
         let role = $(this).data('role');
 
-        $('#view_id').val(id);
-        $('#view_name').val(name);
-        $('#view_email').val(email);
-        $('#view_phone').val(phone);
-        $('#view_role').val(role.charAt(0).toUpperCase() + role.slice(1));
+        // Mengisi modal view dengan data
+        $('#view_name').text(name);
+        $('#view_email').text(email);
+        $('#view_phone').text(phone);
+        $('#view_role').text(role);
         $('#viewUserModal').modal('show');
     });
 
     // Tombol tambah user
     $('.btn-create').on('click', function() {
-        $('#createForm .form-control').removeClass('is-invalid');
-        $('#createForm .invalid-feedback').text('');
         $('#createForm')[0].reset();
+        $('#createForm .form-control').removeClass('is-invalid');
     });
 
-    // Tombol edit user
+    // Tombol edit user (kode Anda di sini sudah benar)
     $('.btn-edit').on('click', function(e) {
         e.preventDefault();
-        $('#editForm .form-control').removeClass('is-invalid');
-        $('#editForm .invalid-feedback').text('');
 
+        // 1. Ambil semua data dari tombol
         let id = $(this).data('id');
         let name = $(this).data('name');
         let email = $(this).data('email');
         let phone = $(this).data('phone');
-        let role = $(this).data('role');
+        let userRoles = $(this).data('role').toString().split(', ');
         let url = `/users/${id}`;
 
+        // 2. Isi form dengan data dasar
         $('#editForm').attr('action', url);
-        $('#edit_user_id_display').val(id);
         $('#edit_name').val(name);
         $('#edit_email').val(email);
         $('#edit_phone').val(phone);
-        $('#edit_role').val(role);
         $('#editForm [name="password"]').val('');
+
+        // 3. Reset (uncheck) semua checkbox roles
+        $('#edit_roles_container input[type="checkbox"]').prop('checked', false);
+
+        // 4. Loop dan centang checkbox yang sesuai
+        userRoles.forEach(function(roleName) {
+            if (roleName) {
+                $('#edit_roles_container input[value="' + roleName + '"]').prop('checked', true);
+            }
+        });
+
+        // 5. Tampilkan modal
         $('#editUserModal').modal('show');
     });
 });
 </script>
 @endpush
+
+{{-- ========================================================== --}}
+{{-- Halaman Role & Izin --}}
+{{-- ========================================================== --}}
+<script>
+$(function() {
+    // Tombol edit role
+    $('.btn-edit-role').on('click', function(e) {
+        e.preventDefault();
+
+        // 1. Ambil data dari tombol
+        let id = $(this).data('id');
+        let name = $(this).data('name');
+        let permissions = $(this).data('permissions');
+        let url = `/roles/${id}`;
+
+        // 2. Isi form
+        $('#editRoleForm').attr('action', url);
+        $('#edit_role_name').text(name);
+
+        // 3. Reset checkbox
+        $('#permissions_container input[type="checkbox"]').prop('checked', false);
+
+        // 4. Centang checkbox yang sesuai
+        if (permissions) {
+            permissions.forEach(function(permissionName) {
+                $('#permissions_container input[value="' + permissionName + '"]').prop('checked', true);
+            });
+        }
+
+        // 5. Tampilkan modal
+        $('#editRoleModal').modal('show');
+    });
+});
+</script>
 
 
 {{-- ========================================================== --}}
@@ -297,6 +340,19 @@ $(document).ready(function() {
             viewModal.find('#view_stok').closest('.form-group').find('label').text('Stok');
         }
         viewModal.modal('show');
+    });
+});
+</script>
+
+{{-- ========================================================== --}}
+{{-- Konfirmasi Submit Form Edit Role --}}
+{{-- ========================================================== --}}
+<script>
+$(function() {
+    $('#editRoleForm').on('submit', function(e) {
+        if (!confirm('Apakah Anda yakin ingin menyimpan perubahan izin untuk role ini?')) {
+            e.preventDefault(); // Batalkan submit jika user memilih "Batal"
+        }
     });
 });
 </script>

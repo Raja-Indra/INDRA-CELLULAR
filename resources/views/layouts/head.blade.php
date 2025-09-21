@@ -1,5 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 {{-- Google Font: Source Sans Pro --}}
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -30,50 +31,72 @@
 <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 
 <style>
-        /* CSS UNTUK LATAR BELAKANG */
-    /* CSS UNTUK LATAR BELAKANG LOGIN */
+    /* New animated background for login page */
     body.login-page {
-        /* Path relatif dari folder css ke folder dist/img */
-        background-image: url('../dist/img/spanduk.jpg');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
+        background: linear-gradient(150deg, #ff8e78, #ff6456);
+        overflow: hidden; /* Hide scrollbars from the animation */
+    }
+
+    .bg-bubbles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0; /* Behind login box */
+    }
+
+    .bg-bubbles li {
+        position: absolute;
+        list-style: none;
+        display: block;
+        width: 40px;
+        height: 40px;
+        background-color: rgba(255, 255, 255, 0.15);
+        bottom: -160px;
+        border-radius: 50%;
+        animation: square 25s infinite;
+        transition-timing-function: linear;
+    }
+    .bg-bubbles li:nth-child(1) { left: 10%; }
+    .bg-bubbles li:nth-child(2) { left: 20%; width: 80px; height: 80px; animation-delay: 2s; animation-duration: 17s; }
+    .bg-bubbles li:nth-child(3) { left: 25%; animation-delay: 4s; }
+    .bg-bubbles li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-duration: 22s; background-color: rgba(255, 255, 255, 0.25); }
+    .bg-bubbles li:nth-child(5) { left: 70%; }
+    .bg-bubbles li:nth-child(6) { left: 80%; width: 120px; height: 120px; animation-delay: 3s; background-color: rgba(255, 255, 255, 0.2); }
+    .bg-bubbles li:nth-child(7) { left: 32%; width: 160px; height: 160px; animation-delay: 7s; }
+    .bg-bubbles li:nth-child(8) { left: 55%; width: 20px; height: 20px; animation-delay: 15s; animation-duration: 40s; }
+    .bg-bubbles li:nth-child(9) { left: 25%; width: 10px; height: 10px; animation-delay: 2s; animation-duration: 40s; background-color: rgba(255, 255, 255, 0.3); }
+    .bg-bubbles li:nth-child(10) { left: 90%; width: 160px; height: 160px; animation-delay: 11s; }
+
+    @keyframes square {
+        0%   { transform: translateY(0); }
+        100% { transform: translateY(-1080px) rotate(600deg); }
     }
 
     /* CSS UNTUK MEMPERJELAS JUDUL */
     .login-logo a {
         color: #FFFFFF; /* Mengubah warna teks menjadi putih */
-        /* Memberi bayangan pada teks agar kontras dengan background */
-        text-shadow: 10px 10px 8px rgba(0, 0, 0, 0.6);
-        /* Menambah ukuran font menjadi lebih besar */
-        font-size: 2.5rem; /* Anda bisa ganti nilainya, misal: 40px */
-
-        /* Membuat seluruh teks menjadi tebal (bold) */
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+        font-size: 2.5rem; 
         font-weight: bold;
     }
 
     /* CSS UNTUK FORM CARD */
     .login-box .card {
-        background-color: #ffffff;
-        border-radius: 0.5rem; /* Membuat sudut sedikit lebih tumpul (opsional) */
-
-        /* INI ADALAH EFEK BAYANGANNYA */
-        box-shadow: 50 50px 50px rgba(0, 0, 0, 0.2);
-
-        /* Efek transisi halus saat mouse diarahkan (opsional) */
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 0.5rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease-in-out;
     }
 
-    /* Efek Interaktif (Opsional): bayangan akan sedikit lebih tebal saat mouse di atas form */
     .login-box .card:hover {
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
-        transform: translateY(-3px); /* Sedikit mengangkat card ke atas */
     }
 
-        /* Warna latar belakang utama sidebar */
+    /* Warna latar belakang utama sidebar */
     .main-sidebar.sidebar-custom-blue {
-        /* Menggunakan gradasi linear dari atas (warna asli) ke bawah (warna lebih gelap) */
-        background: linear-gradient(150deg, #ff6456, #e85a4d);
+        background: linear-gradient(150deg, #ff8e78, #ff6456);
     }
 
     /* Warna untuk brand-link, teks menu, dan ikon */
@@ -95,4 +118,9 @@
         color: #ffffff;
     }
 
+    .custom-header-gradient {
+        background-color: #ff6456;
+        background-image: linear-gradient(to right, #ff6456, #ff8e78);
+        color: white;
+    }
 </style>

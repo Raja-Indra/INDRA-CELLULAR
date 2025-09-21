@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <div class="info-box" style="background: linear-gradient(50deg, #ff6456, #e85a4d); color: white;">
+                <div class="info-box" style="background: linear-gradient(50deg, #ff6456, #ff8e78); color: white;">
     <div class="info-box-content">
         <span class="info-box-number" style="font-size: 1.9rem;">
             Selamat datang kembali, <strong>{{ Auth::user()->name }}!</strong>

@@ -12,17 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->string('id')->primary(); // ID sebagai string dan primary key
+            $table->id();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('phone')->nullable();
             $table->string('password');
-            $table->enum('role', ['admin', 'karyawan'])->default('karyawan'); // Role pengguna (admin/karyawan)
+            $table->boolean('is_active')->default(true); // <-- BARIS INI DITAMBAHKAN
+            $table->string('profile_photo_path', 2048)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\CatatanHutangController;
+use App\Http\Controllers\RolePermissionController;
 
 // --- Rute Publik (Bisa diakses tanpa login) ---
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -38,7 +39,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('providers', ProviderController::class);
     Route::resource('produks', ProdukController::class);
     Route::resource('users', UserController::class);
+    Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggleStatus');
     Route::resource('catatan_hutangs', CatatanHutangController::class);
+    Route::resource('roles', RolePermissionController::class);
+    Route::patch('/roles/{role}/toggle-status', [RolePermissionController::class, 'toggleStatus'])->name('roles.toggleStatus');
 
     // Rute untuk logout
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');

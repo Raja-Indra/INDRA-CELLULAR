@@ -3,19 +3,6 @@
 @section('content')
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <div class="container-fluid">
-        <div class="mb-2 row">
-            <div class="col-sm-6">
-                <h1>Catatan Hutang</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Catatan Hutang</li>
-                </ol>
-            </div>
-        </div>
-    </div><!-- /.container-fluid -->
 </section>
 
 <!-- Main content -->
@@ -24,10 +11,14 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">Catatan Hutang
-                        <button type="button" class="float-right btn btn-primary btn-sm" data-toggle="modal" data-target="#createCatatanHutangModal">
-                            Tambah Catatan Hutang
+                    <div class="card-header custom-header-gradient">
+                        <h3 class="card-title">Catatan Hutang</h3>
+                    <div class="card-tools">
+                        {{-- Tombol diubah menjadi btn-light agar lebih kontras --}}
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCatatanHutangModal">
+                            <i class="fas fa-plus"></i> Catatan Hutang
                         </button>
+                    </div>
                     </div>
 
                     <div class="card-body">

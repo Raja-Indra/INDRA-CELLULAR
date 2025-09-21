@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('providers', function (Blueprint $table) {
-            $table->string('id')->primary(); // ID sebagai string dan primary key
+            $table->id(); // ID sebagai string dan primary key
             $table->string('nama_provider'); // Nama provider
+            $table->string('kategori');
             $table->timestamps(); // created_at dan updated_at
         });
     }

@@ -12,17 +12,18 @@
                 <li class="nav-item">
                     <a href="{{ route('dashboard') }}"
                         class="nav-link {{ request()->routeIs('dashboard', 'home') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        {{-- Ikon diubah menjadi 'home' --}}
+                        <i class="nav-icon fas fa-home"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
 
                 @php
-                    $isKelolaActive = request()->routeIs('users.*', 'produks.*', 'providers.*');
+                    $isKelolaActive = request()->routeIs('users.*', 'produks.*', 'providers.*', 'roles.*');
                 @endphp
                 <li class="nav-item {{ $isKelolaActive ? 'menu-open' : '' }}">
                     <a href="#" class="nav-link {{ $isKelolaActive ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-edit"></i>
+                        <i class="nav-icon fas fa-cogs"></i> {{-- Ikon diubah menjadi 'cogs' (pengaturan) --}}
                         <p>
                             Kelola
                             <i class="fas fa-angle-left right"></i>
@@ -32,21 +33,31 @@
                         <li class="nav-item">
                             <a href="{{ route('users.index') }}"
                                 class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
+                                {{-- Ikon diubah menjadi 'users' --}}
+                                <i class="fas fa-users nav-icon"></i>
                                 <p>Users</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('roles.index') }}"
+                                class="nav-link {{ request()->routeIs('roles.*') ? 'active' : '' }}">
+                                <i class="fas fa-user-shield nav-icon"></i>
+                                <p>Role & Izin</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('produks.index') }}"
                                 class="nav-link {{ request()->routeIs('produks.*') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
+                                {{-- Ikon diubah menjadi 'box-open' (produk) --}}
+                                <i class="fas fa-box-open nav-icon"></i>
                                 <p>Produk</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('providers.index') }}"
                                 class="nav-link {{ request()->routeIs('providers.*') ? 'active' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
+                                {{-- Ikon diubah menjadi 'truck' (pemasok) --}}
+                                <i class="fas fa-truck nav-icon"></i>
                                 <p>Provider</p>
                             </a>
                         </li>

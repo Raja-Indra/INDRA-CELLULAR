@@ -20,7 +20,7 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        // 1. Validasi input email dan password
+        // 1. Validasi input
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
@@ -28,25 +28,28 @@ class AuthController extends Controller
 
         // 2. Mencoba melakukan autentikasi
         if (Auth::attempt($credentials)) {
-            // Regenerasi session untuk keamanan
+            $user = Auth::user(); // Ambil data user yang berhasil login
+
+            // 3. PENTING: Cek apakah user aktif
+            if (!$user->is_active) {
+                // Jika tidak aktif, paksa logout dan beri pesan error
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'email' => 'Akun Anda saat ini tidak aktif. Silakan hubungi administrator.',
+                ])->onlyInput('email');
+            }
+
+            // 4. Regenerasi session untuk keamanan
             $request->session()->regenerate();
 
-            // 3. Jika berhasil, cek role dan arahkan (redirect)
-            $user = Auth::user();
-            if ($user->role === 'admin') {
-                // Jika role adalah admin, arahkan ke dashboard admin
-                return redirect()->intended(route('dashboard'));
-            }
-            if (Auth::attempt($credentials)) {
-                    $user = Auth::user();
-                    if ($user->role === 'karyawan') {
-                        return redirect()->intended('dashboard');
-                    }
-            }
-
+            // 5. Redirect ke dashboard untuk semua user yang berhasil login
+            return redirect()->intended(route('dashboard'));
         }
 
-        // 4. Jika gagal, kembali ke halaman login dengan pesan error
+        // 6. Jika autentikasi gagal, kembali ke halaman login
         return back()->withErrors([
             'email' => 'Email atau password yang Anda masukkan salah.',
         ])->onlyInput('email');

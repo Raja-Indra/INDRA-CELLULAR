@@ -14,15 +14,6 @@ class Provider extends Model
     public $incrementing = false; // Matikan auto-increment untuk ID
     protected $keyType = 'string'; // Pastikan ID adalah string
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($provider) {
-            $provider->id = 'PDR' . time(); // Contoh: PR1706958743
-        });
-    }
-
     // Relasi ke tabel Produk
     public function produks()
     {

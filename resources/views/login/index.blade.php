@@ -9,6 +9,7 @@
             <div class="login-logo">
                 <a href="#"><b>Indra</b>Cellular</a>
             </div>
+            <p class="login-box-msg">Selamat datang kembali!</p>
             <div class="card">
                 {{-- Konten form Anda tetap sama --}}
                 <div class="card-body login-card-body">
@@ -62,6 +63,20 @@
                 </div>
             </div>
         </div>
+
+        <ul class="bg-bubbles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+
         {{-- Script Anda --}}
         <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
         <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

@@ -4,35 +4,42 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Contracts\Auth\CanResetPassword; // <-- Pastikan ini ada
-use Illuminate\Notifications\Notifiable; // <-- Pastikan ini ada
-use Illuminate\Support\Str;
+use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles; // <-- 1. Tambahkan use untuk Spatie
 
-class User extends Authenticatable implements CanResetPassword // <-- Pastikan ini ada
+class User extends Authenticatable
 {
-    use HasFactory;
-    use Notifiable; // <-- Pastikan ini ada
- 
-    protected $fillable = ['id', 'name', 'email', 'phone', 'password', 'role', 'profile_photo_path'];
-    public $incrementing = false; // Matikan auto-increment untuk ID
-    protected $keyType = 'string'; // Pastikan ID adalah string
+    use HasFactory, Notifiable, HasRoles;
 
-    protected static function boot()
-    {
-        parent::boot();
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'password',
+    ];
 
-        static::creating(function ($user) {
-            // Logika untuk menentukan prefix ID berdasarkan role
-            if ($user->role === 'karyawan') {
-                $prefix = 'KYN';
-            } elseif ($user->role === 'admin') {
-                $prefix = 'ADN';
-            } else {
-                $prefix = 'USR'; // Default prefix jika role tidak dikenali
-            }
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 
-            // Gabungkan prefix dengan timestamp untuk membuat ID unik
-            $user->id = $prefix . time();
-        });
-    }
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed', // <-- Ini akan meng-hash password secara otomatis
+    ];
 }

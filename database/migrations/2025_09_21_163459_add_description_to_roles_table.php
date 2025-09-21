@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('providers', function (Blueprint $table) {
-            $table->string('kategori')->nullable()->after('nama_provider');
-
+        Schema::table('roles', function (Blueprint $table) {
+            $table->string('description')->nullable()->after('name');
         });
     }
 
@@ -22,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('providers', function (Blueprint $table) {
-            //
+        Schema::table('roles', function (Blueprint $table) {
+            $table->dropColumn('description');
         });
     }
 };

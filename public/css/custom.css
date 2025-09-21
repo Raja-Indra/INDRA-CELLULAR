@@ -1,0 +1,22 @@
+/* Custom styles for login page */
+.login-box .card {
+    border-radius: 10px; /* Slightly rounded corners */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Softer shadow */
+}
+
+.login-card-body {
+    padding: 2rem; /* Increase padding for more breathing room */
+}
+
+.login-box-msg {
+    color: #555; /* Slightly darker text for better readability */
+    margin-bottom: 1.5rem; /* More space below messages */
+}
+
+.input-group .form-control {
+    border-radius: 5px; /* Rounded corners for input fields */
+}
+
+.btn-primary {
+    border-radius: 5px; /* Rounded corners for button */
+}
